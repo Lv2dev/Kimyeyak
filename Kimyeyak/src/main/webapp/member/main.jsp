@@ -63,7 +63,7 @@
 <body>
 
 
-	<div class="container">
+	<!--  <div class="container">
 		<header
 			class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
 			<a href="main.jsp"
@@ -77,31 +77,63 @@
 				<li class="nav-item"><a href="#" class="nav-link">내정보</a></li>
 				<li class="nav-item"><a href="#" class="nav-link">즐겨찾기</a></li>
 				<li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
-				<%
-				//로그인 되어 있는 상태에서는 로그아웃 버튼 출력
-
-				if (session.getAttribute("memberDTO") != null) {
-				%>
-				<button type="button" class="btn btn-primary">로그아웃</button>
-				<%
-				//로그인 되어 있지 않은 상태라면 로그인 버튼 출력
-				} else {
-				%>
 				<button type="button" class="btn btn-primary">로그인</button>
-				<%
-				}
-				%>
+		}				%>
 
 			</ul>
-		</header>
+		</header>-->
+
+	<header >
+		<!-- test -->
+		<nav class="navbar navbar-expand-lg navbar-light"
+			style="background-color: #e3f2fd;">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="#">김예약</a>
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+					aria-controls="navbarSupportedContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse " id="navbarSupportedContent">
+					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
+						<li class="nav-item"><a class="nav-link active"
+							aria-current="page" href="#">구독 채널</a></li>
+						<li class="nav-item"><a class="nav-link" href="#">내주변</a></li>
+						<li class="nav-item"><a class="nav-link" href="#">예약</a></li>
+						<li class="nav-item"><a class="nav-link" href="#">내정보</a></li>
+						<li class="nav-item"><a class="nav-link" href="#">즐겨찾기</a></li>
+						<li class="nav-item"><a class="nav-link" href="#">리뷰</a></li>
+						<%
+						//로그인 되어 있는 상태에서는 로그아웃 버튼 출력
+
+						if (session.getAttribute("memberDTO") != null) {
+						%>
+						<li class="nav-item"><button type="button" class="btn btn-primary">로그아웃</button></li>
+						
+						<%
+						//로그인 되어 있지 않은 상태라면 로그인 버튼 출력
+						} else {
+						%>
+						<li class="nav-item mx-3"><button type="button" class="btn btn-primary">로그인</button></li>
+						<%
+						}
+						%>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+
+
 	</div>
 
 
 
 	<main class="row justify-content-center">
 
-		<section
-			class="py-5 px-0 mx-0 text-center container">
+		<section class="py-5 px-0 mx-0 text-center container">
 			<div class="pt-lg-5 pb-lg-3 px-0 mx-0 text-center">
 				<div class="col-lg-6 col-md-8 mx-auto my-auto">
 					<h1 class="fw-light">김예약</h1>
