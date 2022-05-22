@@ -3,6 +3,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<%
+	
+%>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
@@ -39,6 +42,7 @@
 	color="#7952b3">
 <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
 <meta name="theme-color" content="#7952b3">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 
 <style>
@@ -64,25 +68,25 @@
 <body class="text-center">
 
 	<main class="form-signin">
-		<form>
+		<form action="loginProc.jsp" method="post">
 			<img class="mb-4" src="../img/logo.png"
 				alt="" width="72" height="57">
 			<h1 class="h3 mb-3 fw-normal">로그인</h1>
 
 			<div class="form-floating">
-				<input type="email" class="form-control" id="floatingInput"
-					placeholder="ID"> <label for="floatingInput">아이디</label>
+				<input type="text" class="form-control" id="floatingInput"
+					placeholder="ID" name="id"> <label for="floatingInput">아이디</label>
 			</div>
 			<div class="form-floating">
 				<input type="password" class="form-control" id="floatingPassword"
-					placeholder="Password"> <label for="floatingPassword">비밀번호</label>
+					placeholder="Password" name="password"> <label for="floatingPassword">비밀번호</label>
 			</div>
 
 			<div class="button mb-3">
 				<button class="w-100 btn btn-lg btn-primary" type="submit">로그인</button>
 			</div>
 			<div class="button mb-3">
-				<button class="w-100 btn btn-lg btn-primary" type="button">회원가입</button>
+				<button class="w-100 btn btn-lg btn-primary" type="button" onclick="location.href='join.jsp';">회원가입</button>
 			</div>
 			
 			<p class="mt-5 mb-3 text-muted">© 17831050 이지훈</p>

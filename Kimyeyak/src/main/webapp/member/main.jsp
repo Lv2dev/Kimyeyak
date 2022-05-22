@@ -84,7 +84,7 @@
 		</header>-->
 
 	<header >
-		<!-- test -->
+		<!-- nav -->
 		<nav class="navbar navbar-expand-lg navbar-light"
 			style="background-color: #e3f2fd;">
 			<div class="container-fluid">
@@ -98,24 +98,27 @@
 				<div class="collapse navbar-collapse " id="navbarSupportedContent">
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">구독 채널</a></li>
-						<li class="nav-item"><a class="nav-link" href="#">내주변</a></li>
-						<li class="nav-item"><a class="nav-link" href="#">예약</a></li>
-						<li class="nav-item"><a class="nav-link" href="#">내정보</a></li>
-						<li class="nav-item"><a class="nav-link" href="#">즐겨찾기</a></li>
-						<li class="nav-item"><a class="nav-link" href="#">리뷰</a></li>
+							aria-current="page" href="#">내주변</a></li>
+						<li class="nav-item"><a class="nav-link active"
+							aria-current="page" href="#">예약</a></li>
+						<li class="nav-item"><a class="nav-link active"
+							aria-current="page" href="#">내정보</a></li>
+						<li class="nav-item"><a class="nav-link active"
+							aria-current="page" href="#">즐겨찾기</a></li>
+						<li class="nav-item"><a class="nav-link active"
+							aria-current="page" href="#">리뷰</a></li>
 						<%
 						//로그인 되어 있는 상태에서는 로그아웃 버튼 출력
 
 						if (session.getAttribute("memberDTO") != null) {
 						%>
-						<li class="nav-item"><button type="button" class="btn btn-primary">로그아웃</button></li>
+						<li class="nav-item mx-lg-3 mx-0"><button type="button" class="btn btn-primary" onclick="location.href='logoutProc.jsp';">로그아웃</button></li>
 						
 						<%
 						//로그인 되어 있지 않은 상태라면 로그인 버튼 출력
 						} else {
 						%>
-						<li class="nav-item mx-3"><button type="button" class="btn btn-primary">로그인</button></li>
+						<li class="nav-item mx-lg-3 mx-0 mt-1 mt-lg-0" ><button type="button" class="btn btn-primary" onclick="location.href='login.jsp';">로그인</button></li>
 						<%
 						}
 						%>
