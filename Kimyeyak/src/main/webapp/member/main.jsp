@@ -145,45 +145,47 @@
 			</div>
 		</section>
 
-		<div class=" pb-5 mb-5 justify-content-center">
-			<form class="row justify-content-center col text-center">
-				<input type="search" class="form-control w-50 mb-3"
-					placeholder="검색어 입력" aria-label="Search">
-				<div class="button w-25 h-3 mb-3">
-					<button class="w-100 btn btn-lg btn-outline-primary" type="submit">검색</button>
+		<div class=" pb-5 mb-5 row justify-content-center col-lg-8 col-md-12">
+			<form class="row justify-content-center container col-12">
+				<div class="col-8">
+					<input type="search" class="form-control h-3" style="height:100%;" 
+						placeholder="검색어 입력" aria-label="Search">
+				</div>
+				<div class="col-4">
+					<button class="w-100 btn btn-lg btn-outline-primary" style="height:100%;" type="submit">검색</button>
 				</div>
 			</form>
 		</div>
 		<div
-			class="px-5 mt-5 mb-3 row justify-content-center container col-12">
-			<div class="box px-0 col-4 col-md-2 mx-1 mb-2">
+			class="px-md-0 px-lg-5 mt-5 mb-3 row justify-content-center container col-12">
+			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
 				<button class="btn btn-lg btn-secondary content" type="button">한식</button>
 			</div>
-			<div class="box px-0 col-4 col-md-2 mx-1 mb-2">
+			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
 				<button class="btn btn-lg btn-secondary content" type="button">중식</button>
 			</div>
-			<div class="box px-0 col-4 col-md-2 mx-1 mb-2">
+			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
 				<button class="btn btn-lg btn-secondary content" type="button">양식</button>
 			</div>
-			<div class="box px-0 col-4 col-md-2 mx-1 mb-2">
+			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
 				<button class="btn btn-lg btn-secondary content" type="button">일식</button>
 			</div>
-			<div class="box px-0 col-4 col-md-2 mx-1 mb-2">
+			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
 				<button class="btn btn-lg btn-secondary content" type="button">아시안</button>
 			</div>
-			<div class="box px-0 col-4 col-md-2 mx-1 mb-2">
+			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
 				<button class="btn btn-lg btn-secondary content" type="button">패밀리레스토랑</button>
 			</div>
-			<div class="box px-0 col-4 col-md-2 mx-1 mb-2">
+			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
 				<button class="btn btn-lg btn-secondary content" type="button">뷔페</button>
 			</div>
-			<div class="box px-0 col-4 col-md-2 mx-1 mb-2">
+			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
 				<button class="btn btn-lg btn-secondary content" type="button">파인다이닝</button>
 			</div>
-			<div class="box px-0 col-4 col-md-2 mx-1 mb-2">
+			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
 				<button class="btn btn-lg btn-secondary content" type="button">오마카세</button>
 			</div>
-			<div class="box px-0 col-4 col-md-2 mx-1 mb-2">
+			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
 				<button class="btn btn-lg btn-secondary content" type="button">바베큐</button>
 			</div>
 		</div>

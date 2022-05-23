@@ -22,7 +22,7 @@ public class DBConnecter {
 		try {
 			//Connection pool 사용
 			context = new InitialContext();
-			dataSource = (DataSource) context.lookup("java:comp/env/jdbc/mysql");
+			dataSource = (DataSource) context.lookup("java:comp/env/jdbc/kimyeyak");
 			conn = dataSource.getConnection();
 		} catch (Exception e) {
 			System.out.println("DBConnection ERROR");

@@ -1,10 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@page import="com.kimyeyak.member.*" %>
+<%request.setCharacterEncoding("UTF-8");%>
 <!DOCTYPE html>
 <html>
 <head>
 <%
-	
+//이미 로그인 된 상태면
+//일반회원: <member/main.jsp>
+//사업자회원: <store/main.jsp>
+MemberDTO memberDTO = (MemberDTO) session.getAttribute("memberDTO");
+if (memberDTO != null) {
+	if (memberDTO.getType() == 0) { //일반회원이면
+		response.sendRedirect("../member/main.jsp");
+	} else if (memberDTO.getType() == 1) {//사업자 회원이면
+		response.sendRedirect("../store/main.jsp");
+	}
+}
+
+String notice = "로그인";
+//로그아웃 실패 정보가 넘어온 경우 안내 메시지 변경
+if(session.getAttribute("loginMessage") != null){
+	notice = "정보가 일치하지 않아요";
+	session.removeAttribute("loginMessage"); //해당 세션 삭제
+}
 %>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -69,9 +88,8 @@
 
 	<main class="form-signin">
 		<form action="loginProc.jsp" method="post">
-			<img class="mb-4" src="../img/logo.png"
-				alt="" width="72" height="57">
-			<h1 class="h3 mb-3 fw-normal">로그인</h1>
+			<img class="mb-4" src="../img/logo.png" alt="" width="72" height="57">
+			<h1 class="h3 mb-3 fw-normal"><%= notice %></h1>
 
 			<div class="form-floating">
 				<input type="text" class="form-control" id="floatingInput"
@@ -79,16 +97,18 @@
 			</div>
 			<div class="form-floating">
 				<input type="password" class="form-control" id="floatingPassword"
-					placeholder="Password" name="password"> <label for="floatingPassword">비밀번호</label>
+					placeholder="Password" name="password"> <label
+					for="floatingPassword">비밀번호</label>
 			</div>
 
 			<div class="button mb-3">
 				<button class="w-100 btn btn-lg btn-primary" type="submit">로그인</button>
 			</div>
 			<div class="button mb-3">
-				<button class="w-100 btn btn-lg btn-primary" type="button" onclick="location.href='join.jsp';">회원가입</button>
+				<button class="w-100 btn btn-lg btn-primary" type="button"
+					onclick="location.href='join.jsp';">회원가입</button>
 			</div>
-			
+
 			<p class="mt-5 mb-3 text-muted">© 17831050 이지훈</p>
 		</form>
 	</main>

@@ -144,7 +144,7 @@ public class MemberDAO extends JDBConnect {
 			pstmt.setString(1, id);
 			pstmt.setString(2, pw);
 
-			rs = stmt.executeQuery(query.toString());
+			rs = pstmt.executeQuery();
 			int cnt = 0;
 			while (rs.next()) {
 				cnt++;
@@ -159,7 +159,7 @@ public class MemberDAO extends JDBConnect {
 			System.out.println("로그인 에러\n" + e.getMessage());
 			return false;
 		} finally {
-			disconnectStmt();
+			disconnectPstmt();
 		}
 	}
 
