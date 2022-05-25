@@ -20,6 +20,13 @@ if (memberDTO != null) {
 		response.sendRedirect("../store/main.jsp");
 	}
 }
+
+String notice = "회원가입";
+if(session.getAttribute("joinMessage") != null){ //회원가입 실패 메시지가 넘어온 경우
+	notice = "회원가입 실패! 다시 시도해 주세요 ㅠㅠ";
+	session.removeAttribute("joinMessage"); //해당 세션 삭제
+}
+
 %>
 
 <head>
@@ -27,7 +34,7 @@ if (memberDTO != null) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
 <meta name="generator" content="Hugo 0.84.0">
-<title>로그인</title>
+<title>회원가입</title>
 
 <link rel="canonical"
 	href="https://getbootstrap.kr/docs/5.0/examples/sign-in/">
@@ -75,8 +82,8 @@ if (memberDTO != null) {
 
 			<div class="row justify-content-center">
 				<div class="col-md-7 col-lg-8">
-					<h4 class="mb-3">가입정보</h4>
-					<form class="needs-validation" novalidate="">
+					<h4 class="mb-3"><%= notice %></h4>
+					<form class="needs-validation" novalidate="" action="joinProc.jsp">
 						<div class="row g-3">
 
 							<!-- 이름 -->
@@ -125,7 +132,7 @@ if (memberDTO != null) {
 							<!-- 전화번호 -->
 							<div class="col-12">
 								<label for="tel" class="form-label">전화번호</label> <input
-									type="password" class="form-control" id="tel"
+									type="tel" class="form-control" id="tel"
 									placeholder="01000000000" name="tel" required="">
 								<div class="invalid-feedback">비밀번호가 다릅니다</div>
 							</div>
@@ -133,7 +140,7 @@ if (memberDTO != null) {
 							<!-- 이메일 -->
 							<div class="col-12">
 								<label for="email" class="form-label">이메일</label> <input
-									type="password" class="form-control" id="email"
+									type="email" class="form-control" id="email"
 									placeholder="email@kimyeyak.com" name="email" required="">
 								<div class="invalid-feedback">이메일을 입력해 주세요</div>
 							</div>
@@ -141,7 +148,7 @@ if (memberDTO != null) {
 							<!-- 생일 -->
 							<div class="col-12">
 								<label for="bDay" class="form-label">생일</label> <input
-									type="date" class="form-control" id="bDay" name="bDay" required="">
+									type="date" class="form-control" id="bDay" name="bDay" required="" pattern="yyyy-MM-dd">
 								<div class="invalid-feedback">생일을 입력해 주세요</div>
 							</div>
 

@@ -101,8 +101,9 @@
 							aria-current="page" href="#">내주변</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">예약</a></li>
+						<!-- 내정보 -->
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">내정보</a></li>
+							aria-current="page" href="../member/myinfo.jsp">내정보</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">즐겨찾기</a></li>
 						<li class="nav-item"><a class="nav-link active"

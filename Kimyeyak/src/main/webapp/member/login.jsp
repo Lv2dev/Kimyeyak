@@ -9,8 +9,9 @@
 //이미 로그인 된 상태면
 //일반회원: <member/main.jsp>
 //사업자회원: <store/main.jsp>
-MemberDTO memberDTO = (MemberDTO) session.getAttribute("memberDTO");
-if (memberDTO != null) {
+MemberDTO memberDTO;
+if (session.getAttribute("memberDTO") != null) {
+	memberDTO = (MemberDTO) session.getAttribute("memberDTO");
 	if (memberDTO.getType() == 0) { //일반회원이면
 		response.sendRedirect("../member/main.jsp");
 	} else if (memberDTO.getType() == 1) {//사업자 회원이면
@@ -19,10 +20,15 @@ if (memberDTO != null) {
 }
 
 String notice = "로그인";
-//로그아웃 실패 정보가 넘어온 경우 안내 메시지 변경
-if(session.getAttribute("loginMessage") != null){
-	notice = "정보가 일치하지 않아요";
-	session.removeAttribute("loginMessage"); //해당 세션 삭제
+if(session.getAttribute("loginMessage") != null){ //loginMessage 세션이 null이 아니면
+	String message = (String)session.getAttribute("loginMessage");
+	if(message.equals("false")){ //로그인 실패 메시지가 넘어온 경우
+		notice = "정보가 일치하지 않아요";
+		session.removeAttribute("loginMessage"); //해당 세션 삭제
+	}else if(message.equals("join")){
+		notice = "회원가입 성공! 로그인 해주세요";
+		session.removeAttribute("loginMessage"); //해당 세션 삭제
+	}
 }
 %>
 <meta charset="utf-8">
@@ -91,11 +97,11 @@ if(session.getAttribute("loginMessage") != null){
 			<img class="mb-4" src="../img/logo.png" alt="" width="72" height="57">
 			<h1 class="h3 mb-3 fw-normal"><%= notice %></h1>
 
-			<div class="form-floating">
+			<div class="form-floating mb-2">
 				<input type="text" class="form-control" id="floatingInput"
 					placeholder="ID" name="id"> <label for="floatingInput">아이디</label>
 			</div>
-			<div class="form-floating">
+			<div class="form-floating mb-3">
 				<input type="password" class="form-control" id="floatingPassword"
 					placeholder="Password" name="password"> <label
 					for="floatingPassword">비밀번호</label>
