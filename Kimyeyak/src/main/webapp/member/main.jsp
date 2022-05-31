@@ -113,13 +113,13 @@
 
 						if (session.getAttribute("memberDTO") != null) {
 						%>
-						<li class="nav-item mx-lg-3 mx-0"><button type="button" class="btn btn-primary" onclick="location.href='logoutProc.jsp';">로그아웃</button></li>
+						<li class="nav-item mx-lg-3 mx-0"><button type="button" class="btn btn-primary" onclick="location.href='../member/logoutProc';">로그아웃</button></li>
 						
 						<%
 						//로그인 되어 있지 않은 상태라면 로그인 버튼 출력
 						} else {
 						%>
-						<li class="nav-item mx-lg-3 mx-0 mt-1 mt-lg-0" ><button type="button" class="btn btn-primary" onclick="location.href='login.jsp';">로그인</button></li>
+						<li class="nav-item mx-lg-3 mx-0 mt-1 mt-lg-0" ><button type="button" class="btn btn-primary" onclick="location.href='../member/login';">로그인</button></li>
 						<%
 						}
 						%>

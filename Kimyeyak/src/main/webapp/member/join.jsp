@@ -83,7 +83,7 @@ if(session.getAttribute("joinMessage") != null){ //회원가입 실패 메시지
 			<div class="row justify-content-center">
 				<div class="col-md-7 col-lg-8">
 					<h4 class="mb-3"><%= notice %></h4>
-					<form class="needs-validation" novalidate="" action="joinProc.jsp">
+					<form class="needs-validation" novalidate="" action="../member/joinProc" method="post">
 						<div class="row g-3">
 
 							<!-- 이름 -->

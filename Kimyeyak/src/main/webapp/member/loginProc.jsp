@@ -27,5 +27,6 @@
 	}else{ //값이 맞으면 로그인 성공
 		memberDTO = memberDAO.getMemberInfo(id);
 		session.setAttribute("memberDTO", memberDTO);
+		
 	}
 %>

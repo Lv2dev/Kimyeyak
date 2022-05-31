@@ -37,8 +37,8 @@ public class MemberDAO extends JDBConnect {
 			query.append("SELECT id FROM member ");
 			query.append("WHERE id = ?");
 
-			pstmt.setString(1, id);
 			pstmt = conn.prepareStatement(query.toString());
+			pstmt.setString(1, id);
 
 			rs = pstmt.executeQuery();
 
@@ -57,7 +57,7 @@ public class MemberDAO extends JDBConnect {
 			System.out.println("아이디 중복체크 에러 \n" + e.getMessage());
 			return false;
 		} finally {
-			disconnectStmt();
+			disconnectPstmt();
 		}
 	}
 
@@ -66,7 +66,7 @@ public class MemberDAO extends JDBConnect {
 		try {
 			conn = dbConn.getConn();
 			query = new StringBuffer();
-			query.append("INSERT INTO member ");
+			query.append("INSERT INTO member(id, pw, name, nickname, tel, email, bday, jday, type, gender, question, answer) ");
 			query.append("VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 			// 현재시간 timestamp
@@ -88,6 +88,8 @@ public class MemberDAO extends JDBConnect {
 			pstmt.setTimestamp(8, ts);
 			pstmt.setInt(9, memberDTO.getType());
 			pstmt.setInt(10, memberDTO.getGender());
+			pstmt.setString(11, memberDTO.getQuestion());
+			pstmt.setString(12, memberDTO.getAnswer());
 
 			if (pstmt.executeUpdate() != 1) {
 				return false;
@@ -136,7 +138,7 @@ public class MemberDAO extends JDBConnect {
 
 			query = new StringBuffer();
 
-			query.append("SELECT id, pw FROM member ");
+			query.append("SELECT id FROM member ");
 			query.append("WHERE id = ? AND pw = ?");
 
 			pstmt = conn.prepareStatement(query.toString());
@@ -250,7 +252,7 @@ public class MemberDAO extends JDBConnect {
 
 			pstmt.setString(1, id);
 
-			rs = pstmt.executeQuery(query.toString());
+			rs = pstmt.executeQuery();
 
 			MemberDTO memberDTO = new MemberDTO();
 
@@ -281,7 +283,7 @@ public class MemberDAO extends JDBConnect {
 			System.out.println("회원정보 가져오기 오류 \n" + e.getMessage());
 			return null;
 		} finally {
-			disconnectStmt();
+			disconnectPstmt();
 		}
 	}
 
