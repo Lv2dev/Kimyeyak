@@ -13,11 +13,12 @@ import javax.servlet.http.HttpSession;
 
 import com.kimyeyak.member.*;
 
-@WebServlet("/member/loginProc")
+@WebServlet("/member/LoginProc")
 public class LoginProc extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
 		// 이미 로그인 된 상태면
 		// 일반회원: <member/main.jsp> 으로 보냄
@@ -25,11 +26,11 @@ public class LoginProc extends HttpServlet {
 		MemberDTO memberDTO;
 		if (session.getAttribute("memberDTO") != null) {
 			memberDTO = (MemberDTO) session.getAttribute("memberDTO");
-			if (memberDTO.getType() == 0) { // 일반회원인 경우
-				response.sendRedirect("../member/main");
+			if (memberDTO.getType() == 2) { // 일반회원인 경우
+				response.sendRedirect("../member/Main");
 				return;
 			} else if (memberDTO.getType() == 1) {// 사업자회원인 경우
-				response.sendRedirect("../store/main");
+				response.sendRedirect("../store/Main");
 				return;
 			}
 		}
@@ -38,18 +39,23 @@ public class LoginProc extends HttpServlet {
 		String pw = request.getParameter("pw");
 		MemberDAO memberDAO = MemberDAO.getInstance();
 
-		// 아이디와 비밀번호가 맞지 않으면 다시 login.jsp로. 보낼 때 세션으로 로그인 실패 값 전달
+		// 아이디와 비밀번호가 맞지 않으면 다시 Login.jsp로. 보낼 때 세션으로 로그인 실패 값 전달
 		// 값이 맞으면 세션에 MemberDTO 저장 후 main.jsp로
 		try {
-			if (!memberDAO.memberLogin(id, pw)) { // 값이 맞지 않으면 - member/login으로 다시 이동
+			if (!memberDAO.memberLogin(id, pw)) { // 값이 맞지 않으면 - member/Login으로 다시 이동
 				session.setAttribute("loginMessage", "false"); //로그인 메시지 전달
-				response.sendRedirect("../member/login");
+				response.sendRedirect("../member/Login");
 				return;
-			} else { // 값이 맞으면 로그인 성공 - member/main으로 이동
+			} else { // 값이 맞으면 로그인 성공 
 				memberDTO = memberDAO.getMemberInfo(id);
 				session.setAttribute("memberDTO", memberDTO); //세션에 memberDTO 저장
-				response.sendRedirect("../member/main");
-				return;
+				if(memberDTO.getType() == 2) { //일반 회원인 경우
+					response.sendRedirect("../member/Main"); //member/main으로 이동
+					return;
+				}else if(memberDTO.getType() == 1) { //사업자회원인 경우
+					response.sendRedirect("../store/Main"); //member/main으로 이동
+					return;
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -12,11 +12,13 @@ import javax.servlet.http.HttpSession;
 
 import com.kimyeyak.member.MemberDTO;
 
-@WebServlet("/member/join")
+@WebServlet("/member/Join")
 public class Join extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
 		// 이미 로그인 된 상태면
 		// 일반회원: <member/main.jsp> 으로 보냄
@@ -25,10 +27,10 @@ public class Join extends HttpServlet {
 		if (session.getAttribute("memberDTO") != null) {
 			memberDTO = (MemberDTO) session.getAttribute("memberDTO");
 			if (memberDTO.getType() == 0) { // 일반회원인 경우
-				response.sendRedirect("../member/main");
+				response.sendRedirect("../member/Main");
 				return;
 			} else if (memberDTO.getType() == 1) {// 사업자회원인 경우
-				response.sendRedirect("../store/main");
+				response.sendRedirect("../store/Main");
 				return;
 			}
 		}
@@ -44,9 +46,10 @@ public class Join extends HttpServlet {
 			}
 			session.removeAttribute("joinMessage"); //해당 세션 삭제
 		}
+		request.setAttribute("notice", notice);
 
 		// 회원가입 페이지로 이동
-		request.getRequestDispatcher("../member/join.jsp").forward(request, response);
+		request.getRequestDispatcher("../member/Join.jsp").forward(request, response);
 		return;
 	}
 }

@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>예약은 김예약</title>
+<title>예약은 김예약 - 사장님페이지</title>
 
 <!-- bootstrap -->
 <link
@@ -98,7 +98,7 @@
 				<div class="collapse navbar-collapse " id="navbarSupportedContent">
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">내주변</a></li>
+							aria-current="page" href="../store/newStore">새 가게</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">예약</a></li>
 						<!-- 내정보 -->
@@ -159,6 +159,7 @@
 		</div>
 		<div
 			class="px-md-0 px-lg-5 mt-5 mb-3 row justify-content-center container col-12">
+			<!-- 내 가게들 출력 -->
 			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
 				<button class="btn btn-lg btn-secondary content" type="button">한식</button>
 			</div>

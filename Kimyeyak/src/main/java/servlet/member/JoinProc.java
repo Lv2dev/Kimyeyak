@@ -17,9 +17,11 @@ import com.kimyeyak.member.MemberDTO;
 /**
  * Servlet implementation class JoinProc
  */
-@WebServlet("/member/joinProc")
+@WebServlet("/member/JoinProc")
 public class JoinProc extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
 		// 이미 로그인 된 상태면
 		// 일반회원: <member/main.jsp> 으로 보냄
@@ -28,10 +30,10 @@ public class JoinProc extends HttpServlet {
 		if (session.getAttribute("memberDTO") != null) {
 			memberDTO = (MemberDTO) session.getAttribute("memberDTO");
 			if (memberDTO.getType() == 0) { // 일반회원인 경우
-				response.sendRedirect("../member/main");
+				response.sendRedirect("../member/Main");
 				return;
 			} else if (memberDTO.getType() == 1) {// 사업자회원인 경우
-				response.sendRedirect("../store/main");
+				response.sendRedirect("../store/Main");
 				return;
 			}
 		}
@@ -57,21 +59,25 @@ public class JoinProc extends HttpServlet {
 		memberDTO.setEmail(request.getParameter("email"));
 		memberDTO.setbDay(Date.valueOf(request.getParameter("bDay")));
 		memberDTO.setTel(request.getParameter("tel"));
+		memberDTO.setQuestion(request.getParameter("question"));
+		memberDTO.setAnswer(request.getParameter("answer"));
+		memberDTO.setType(Integer.parseInt(request.getParameter("type")));
+		memberDTO.setGender(Integer.parseInt(request.getParameter("gender")));
 		
 		//회원가입 메서드 수행
 		try {
 			if(!memberDAO.idCheck(memberDTO.getId())) {
 				session.setAttribute("loginMessage", "id"); //login 페이지로 넘길 메시지
-				response.sendRedirect("../member/join");
+				response.sendRedirect("../member/Join");
 				return;
 			}
 			if(memberDAO.joinMember(memberDTO)) { //성공 시
 				session.setAttribute("loginMessage", "join"); //login 페이지로 넘길 메시지
-				response.sendRedirect("../member/login");
+				response.sendRedirect("../member/Login");
 				return;
 			} else { //실패 시
 				session.setAttribute("joinMessage", "false"); //join 페이지로 넘길 실패 메시지
-				response.sendRedirect("../member/join");
+				response.sendRedirect("../member/Join");
 				return;
 			}
 		} catch (SQLException e) {

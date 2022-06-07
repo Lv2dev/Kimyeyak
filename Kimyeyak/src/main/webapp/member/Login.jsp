@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@page import="com.kimyeyak.member.*" %>
-<%request.setCharacterEncoding("UTF-8");%>
+<%
+request.setCharacterEncoding("UTF-8");
+%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,6 +44,14 @@
 <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
 <meta name="theme-color" content="#7952b3">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://kit.fontawesome.com/487e80ebce.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css">
+<style>
+body {
+	font-family: 나눔스퀘어, 'NanumSquare', sans-serif;
+}
+</style>
 
 
 <style>
@@ -67,9 +77,11 @@
 <body class="text-center">
 
 	<main class="form-signin">
-		<form action="../member/loginProc" method="post">
-			<img class="mb-4" src="../img/logo.png" alt="" width="72" height="57">
-			<h1 class="h3 mb-3 fw-normal"><%= request.getAttribute("notice") %></h1>
+		<form action="../member/LoginProc" method="post">
+			<div class="mb-4">
+				<i class="fa-solid fa-right-to-bracket fa-5x"></i>
+			</div>
+			<h1 class="h3 mb-3 fw-normal">${ notice }</h1>
 
 			<div class="form-floating mb-2">
 				<input type="text" class="form-control" id="floatingInput"
@@ -82,11 +94,12 @@
 			</div>
 
 			<div class="button mb-3">
-				<input class="w-100 btn btn-lg btn-primary" type="submit" value="로그인"/>
+				<input class="w-100 btn btn-lg btn-primary" type="submit"
+					value="로그인" />
 			</div>
 			<div class="button mb-3">
 				<button class="w-100 btn btn-lg btn-primary" type="button"
-					onclick="location.href='../member/join';">회원가입</button>
+					onclick="location.href='../member/Join';">회원가입</button>
 			</div>
 
 			<p class="mt-5 mb-3 text-muted">© 17831050 이지훈</p>

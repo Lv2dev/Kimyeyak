@@ -8,28 +8,6 @@ request.setCharacterEncoding("UTF-8");
 <!DOCTYPE html>
 <html>
 <head>
-<%
-//이미 로그인 된 상태면
-//일반회원: <member/main.jsp>
-//사업자회원: <store/main.jsp>
-MemberDTO memberDTO = (MemberDTO) session.getAttribute("memberDTO");
-if (memberDTO != null) {
-	if (memberDTO.getType() == 0) { //일반회원이면
-		response.sendRedirect("../member/main.jsp");
-	} else if (memberDTO.getType() == 1) {//사업자 회원이면
-		response.sendRedirect("../store/main.jsp");
-	}
-}
-
-String notice = "회원가입";
-if(session.getAttribute("joinMessage") != null){ //회원가입 실패 메시지가 넘어온 경우
-	notice = "회원가입 실패! 다시 시도해 주세요 ㅠㅠ";
-	session.removeAttribute("joinMessage"); //해당 세션 삭제
-}
-
-%>
-
-<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
@@ -82,15 +60,15 @@ if(session.getAttribute("joinMessage") != null){ //회원가입 실패 메시지
 
 			<div class="row justify-content-center">
 				<div class="col-md-7 col-lg-8">
-					<h4 class="mb-3"><%= notice %></h4>
-					<form class="needs-validation" novalidate="" action="../member/joinProc" method="post">
+					<h4 class="mb-3"><%= request.getAttribute("notice") %></h4>
+					<form class="needs-validation" novalidate="" action="../member/JoinProc" method="post">
 						<div class="row g-3">
 
 							<!-- 이름 -->
 							<div class="col-sm-6">
 								<label for="name" class="form-label">이름</label> <input
 									type="text" class="form-control" id="name" placeholder="이름"
-									value="" required="">
+									value="" required="" name="name">
 								<div class="invalid-feedback">이름을 입력해 주세요</div>
 							</div>
 
@@ -100,7 +78,7 @@ if(session.getAttribute("joinMessage") != null){ //회원가입 실패 메시지
 								<div class="input-group has-validation">
 									<span class="input-group-text">@</span> <input type="text"
 										class="form-control" id="nickname" placeholder="닉네임"
-										required="">
+										required="" name="nickname">
 									<div class="invalid-feedback">닉네임을 입력해 주세요</div>
 								</div>
 							</div>
@@ -158,7 +136,7 @@ if(session.getAttribute("joinMessage") != null){ //회원가입 실패 메시지
 								<div class="my-3">
 									<div class="form-check">
 										<input id="credit" name="type" type="radio"
-											class="form-check-input" checked="" required="" value="0"> <label
+											class="form-check-input" checked="" required="" value="2"> <label
 											class="form-check-label" for="type0">일반 회원</label>
 									</div>
 									<div class="form-check">
