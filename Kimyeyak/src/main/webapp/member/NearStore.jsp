@@ -8,7 +8,14 @@ request.setCharacterEncoding("UTF-8");
 <html>
 <head>
 <meta charset="UTF-8">
-<title>예약은 김예약</title>
+<title>김예약</title>
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css">
+<style>
+body {
+	font-family: 나눔스퀘어, 'NanumSquare', sans-serif;
+}
+</style>
 <!-- bootstrap -->
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
@@ -21,13 +28,6 @@ request.setCharacterEncoding("UTF-8");
 	crossorigin="anonymous"></script>
 <meta name="theme-color" content="#7952b3">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css"
-	href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css">
-<style>
-body {
-	font-family: 나눔스퀘어, 'NanumSquare', sans-serif;
-}
-</style>
 <style>
 .box {
 	position: relative;
@@ -36,7 +36,7 @@ body {
 .box:before {
 	content: "";
 	display: block;
-	padding-top: 100%; /* 1:1 비율 */
+	padding-top: 80%; /* 1:1 비율 */
 }
 
 .content {
@@ -67,7 +67,7 @@ body {
 }
 </style>
 </head>
-<body class="row justify-content-center">
+<body>
 	<!--  <div class="container">
 		<header
 			class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
@@ -90,7 +90,7 @@ body {
 		<nav class="navbar navbar-expand-lg navbar-light"
 			style="background-color: #e3f2fd;">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="../member/Main">김예약</a>
+				<a class="navbar-brand" href="../member/Main"><b>김예약</a>
 				<button class="navbar-toggler" type="button"
 					data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
 					aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -127,85 +127,27 @@ body {
 		</nav>
 	</header>
 	</div>
-	<main class="row justify-content-center container">
+	<main class="row justify-content-center">
 		<section class="py-5 px-0 mx-0 text-center container">
 			<div class="pt-lg-5 pb-lg-3 px-0 mx-0 text-center">
-				<div class="col-lg-6 col-md-8 mx-auto my-5">
-					<h1 class="m-0 mb-3" style="font-weight: 800;">${ storeDTO.storeName }</h1>
-					<p class="lead text-muted" style="font-weight: 400;">
-						<c:if test="${ storeDTO.status == 0 }">
-						지금은 예약을 받지 않습니다.
-						</c:if>
-						<c:if test="${ storeDTO.status > 0 }">
-						예약 버튼을 눌러 일정을 선택 후 예약을 잡을 수 있습니다.
-						</c:if>
-					</p>
+				<div class="col-lg-6 col-md-8 mx-auto my-auto">
+					<h1 class="fw-light">입력한 거리의 반경 내의 가게를 검색합니다</h1>
+					<p class="lead text-muted">현재 주소 : ${ address }</p>
 				</div>
 			</div>
 		</section>
-		<div
-			class="px-md-0 px-lg-5 p-0 mx-0 mb-3  row justify-content-center container col-11 col-md-7">
-
-			<div
-				class="col-12 p-0 px-1 m-0 h-50 container row justify-content-center mt-5">
-				<!--  -->
-				<div
-					class="col-12 col-md-12 mb-2 py-1 h-100 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
-					style="clear: both;">
-					<div class="col-4 col-md-3 m-1 text-center">
-						<img alt="가게이미지" src="${ storeDTO.thumb }">
-					</div>
-					<div
-						class="col-6 col-md-7 m-1 text-left container row justify-content-left ">
-						<h5 class="m-0 col-12 text-left" style="font-weight: 400;">${ storeDTO.notice }</h5>
-						<div class="col-12 container row justify-content-right  pt-4 ">
-
-							<!-- 예약 가능한 상태이면 예약하기 버튼 출력 -->
-							<c:if test="${ storeDTO.status == 1 }">
-								<div class="col-4">
-									<input type="button" class="btn btn-primary "
-										style="font-weight: 700;" value="예약하기"
-										onclick="location.href='../member/Yeyak'">
-								</div>
-							</c:if>
-							<div class="col-4">
-								<input type="button" class="btn btn-primary "
-									style="font-weight: 700;" value="정보보기"
-									onclick="location.href='../member/StoreInfo'">
-							</div>
-						</div>
-
-					</div>
-
+		<div class=" pb-5 mb-5 row justify-content-center col-lg-8 col-md-12">
+			<form class="row justify-content-center container col-12" action="../member/NearStoreProc">
+				<div class="col-8">
+					<input type="number" class="form-control h-3" style="height: 100%;"
+						placeholder="검색어 입력" aria-label="Search" name="distance">
 				</div>
-			</div>
-			<div
-				class="col-12 p-0 px-1 m-0 container row justify-content-center mt-5">
-				<div
-					class="col-12 col-md-12 mb-2 container row justify-content-left align-items-center m-0 pl-auto"
-					style="font-weight: 400">
-					<h4>메뉴 목록</h4>
+				<div class="col-4">
+					<button class="w-100 btn btn-lg btn-outline-primary"
+						style="height: 100%;" type="submit">km</button>
 				</div>
-				<!-- 메뉴목록 -->
-				<c:forEach items="${ menuList }" var="item">
-					<div
-						class="col-12 col-md-12 mb-2 h-75 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
-						style="clear: both;">
-						<div class="col-4 col-md-3 m-1 text-center">
-							<img alt="메뉴이미지" src="${ item.pic }">
-						</div>
-						<div class="col-6 col-md-7 m-1 text-center">
-							<h3>${ item.menuName }</h3>
-							<br>
-							<h5>${ item.price }원</h5>
-						</div>
-					</div>
-				</c:forEach>
-			</div>
-
+			</form>
 		</div>
 	</main>
-
-
 </body>
 </html>

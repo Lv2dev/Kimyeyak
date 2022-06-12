@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 import com.kimyeyak.dbconnect.JDBConnect;
 
@@ -105,7 +107,7 @@ public class StoreDAO extends JDBConnect {
 		}
 	}
 
-	// 가게명 검색해서 검색결과 페이징 해서 List로 가져오기
+	// 가게명과 메뉴명 검색해서 검색결과 페이징 해서 List로 가져오기
 	// keyword : 검색어
 	public synchronized ArrayList<StoreDTO> getSearchList(String keyword, int page, int pageCount) throws SQLException {
 		ArrayList<StoreDTO> list = new ArrayList<StoreDTO>();
@@ -117,15 +119,15 @@ public class StoreDAO extends JDBConnect {
 			query.append(
 					"select distinct st.store_id, st.store_name, st.thumb, row_number() over(order by store_name) as num ");
 			query.append("from store as st left join menu as m  ");
-			query.append("on st.store_id = m.store_id and ");
+			query.append("on st.store_id = m.store_id where ");
 			query.append("(st.store_name like '%" + keyword + "%' or m.menu_name like '%" + keyword
-					+ "%') group by st.store_id order by store_name limit ? ) as temp ");
-			query.append("where num > ? order by num ");
+					+ "%') group by st.store_id order by store_name) as temp ");
+			query.append("where num between ? and ? ");
 
 			pstmt = conn.prepareStatement(query.toString());
 
-			pstmt.setInt(1, pageCount);
-			pstmt.setInt(2, (page - 1) * pageCount);
+			pstmt.setInt(1, (page - 1) * pageCount + 1);
+			pstmt.setInt(2, (page) * pageCount);
 
 			rs = pstmt.executeQuery();
 			int cnt = 0;
@@ -150,7 +152,7 @@ public class StoreDAO extends JDBConnect {
 		}
 	}
 
-	// 가게id와 유저id를 넣으면 가게정보 한번에 가져오기
+	// 가게id 넣으면 가게정보 한번에 가져오기
 	public synchronized StoreDTO getStoreInfo(int storeId) throws SQLException {
 		try {
 			conn = dbConn.getConn();
@@ -182,6 +184,9 @@ public class StoreDAO extends JDBConnect {
 				storeDTO.setJoinDay(rs.getDate("join_day"));
 				storeDTO.setStoreName(rs.getString("store_name"));
 				storeDTO.setStatus(rs.getInt("status"));
+				storeDTO.setAddress(rs.getString("address"));
+				storeDTO.setAddressX(rs.getDouble("address_x"));
+				storeDTO.setAddressY(rs.getDouble("address_y"));
 				cnt++;
 			}
 
@@ -232,6 +237,317 @@ public class StoreDAO extends JDBConnect {
 			return null;
 		} finally {
 			disconnectStmt();
+		}
+	}
+
+	// 카테고리별로 가게 검색하기 - 페이징
+	public synchronized ArrayList<StoreDTO> searchCategoryStorePageing(int category, int page, int pageCount)
+			throws SQLException {
+		ArrayList<StoreDTO> list = new ArrayList<StoreDTO>();
+		try {
+			conn = dbConn.getConn();
+
+			query = new StringBuffer();
+			query.append("select * from ( ");
+			query.append(
+					"select distinct st.store_id, st.store_name, st.thumb, row_number() over(order by store_name) as num ");
+			query.append("from store as st where ");
+			query.append("st.category = ? group by st.store_id order by store_name) as temp ");
+			query.append("where num between ? and ? ");
+
+			pstmt = conn.prepareStatement(query.toString());
+
+			pstmt.setInt(1, category);
+			pstmt.setInt(2, (page - 1) * pageCount + 1);
+			pstmt.setInt(3, (page) * pageCount);
+
+			rs = pstmt.executeQuery();
+			int cnt = 0;
+			while (rs.next()) {
+				cnt++;
+				StoreDTO dto = new StoreDTO();
+				dto.setStoreId(rs.getInt("store_id"));
+				dto.setStoreName(rs.getString("store_name"));
+				dto.setThumb(rs.getString("thumb"));
+				list.add(dto);
+			}
+			if (cnt == 0) {
+				return list;
+			}
+			return list;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			System.out.println("카테고리별 검색 오류 " + e.getMessage());
+			return null;
+		} finally {
+			disconnectPstmt();
+		}
+	}
+
+	// 카테고리별로 가게 검색하기 - 검색결과 갯수 가져오기
+	public synchronized int searchCategoryStoreCount(int category, int page, int pageCount) throws SQLException {
+		try {
+			conn = dbConn.getConn();
+
+			query = new StringBuffer();
+			query.append("select count(distinct st.store_id) as cnt ");
+			query.append("from store as st where ");
+			query.append("category = ? ");
+
+			pstmt = conn.prepareStatement(query.toString());
+
+			pstmt.setInt(1, category);
+
+			rs = pstmt.executeQuery();
+			int cnt = 0;
+			while (rs.next()) {
+				cnt = rs.getInt("cnt");
+			}
+			return cnt;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			System.out.println("카테고리별 검색 갯수반환 오류 " + e.getMessage());
+			return 0;
+		} finally {
+			disconnectPstmt();
+		}
+	}
+
+	// 가게명 검색해서 검색결과 List으로 가져오기 - 키워드, 위도, 경도, 반경
+	public synchronized ArrayList<StoreDTO> searchDistanceList(String keyword, double x, double y, int distance,
+			int page, int pageCount) throws SQLException {
+		ArrayList<StoreDTO> list = new ArrayList<StoreDTO>();
+		try {
+			conn = dbConn.getConn();
+
+			query = new StringBuffer();
+
+			query.append("select * from ( "); // 1
+			query.append(
+					"   select store_id, store_name, thumb, distance, row_number() over(order by distance) as num from (  "); // rownum
+																																// 부여
+			query.append(
+					"      select store.store_id, store.thumb, store.store_name, st_distance_sphere(point(?, ?), point(store.address_x, store.address_y)) as distance ");
+			// x, y
+			query.append("      from store left join menu on store.store_id = menu.store_id ");
+			query.append("      where store.store_name like '%" + keyword + "%' or menu.menu_name like '%" + keyword
+					+ "%' ");
+			query.append("      group by store.store_id order by distance ");
+			query.append("   ) as B ");
+			query.append(") as temp where num between ? and ?");
+
+			pstmt = conn.prepareStatement(query.toString());
+			pstmt.setDouble(1, x);
+			pstmt.setDouble(2, y);
+			pstmt.setInt(3, (page - 1) * pageCount + 1);
+			pstmt.setInt(4, (page) * pageCount);
+
+			rs = pstmt.executeQuery();
+			int cnt = 0;
+			while (rs.next()) {
+				cnt++;
+				StoreDTO dto = new StoreDTO();
+				dto.setStoreId(rs.getInt("store_id"));
+				dto.setStoreName(rs.getString("store_name"));
+				dto.setThumb(rs.getString("thumb"));
+				list.add(dto);
+			}
+			if (cnt == 0) {
+				return list;
+			}
+			return list;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return null;
+		} finally {
+			disconnectStmt();
+		}
+	}
+
+	// 가게명 검색해서 검색결과 갯수 가져오기 - 키워드, 위도, 경도, 반경
+	public synchronized int searchDistanceCount(String keyword, double x, double y, int distance) throws SQLException {
+		try {
+			conn = dbConn.getConn();
+			stmt = conn.createStatement();
+			query = new StringBuffer();
+			query.append("select count(*) as cnt from (");
+			query.append(" select distinct store.store_id, store.store_name,");
+			query.append(" st_distance_sphere(point(" + x + ", " + y
+					+ "), point(store.address_x, store.address_y)) as distance");
+			query.append(" from store join menu");
+			query.append(" on store.store_id = menu.store_id and ((store.store_name like '%" + keyword
+					+ "%' or menu.menu_name like '%" + keyword + "%') and");
+			query.append(" st_distance_sphere(point(" + x + ", " + y + "), point(store.address_x, store.address_y))) < "
+					+ (distance * 1000));
+			query.append(" order by distance) as temp"); // 반경순 정렬
+			rs = stmt.executeQuery(query.toString());
+			int cnt = 0;
+			while (rs.next()) {
+				cnt = rs.getInt("cnt");
+			}
+			return cnt;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return 0;
+		} finally {
+			disconnectStmt();
+		}
+	}
+
+	// 내 가게 list로 가져오기
+	public synchronized ArrayList<StoreDTO> getMyStoreList(String memberId) throws SQLException {
+		try {
+			conn = dbConn.getConn();
+			query = new StringBuffer();
+			query.append("select * from store where member_id = ?");
+
+			pstmt = conn.prepareStatement(query.toString());
+			pstmt.setString(1, memberId);
+			rs = pstmt.executeQuery();
+
+			ArrayList<StoreDTO> list = new ArrayList<StoreDTO>();
+			while (rs.next()) {
+				StoreDTO storeDTO = new StoreDTO();
+				storeDTO.setStoreName(rs.getString("store_name"));
+				storeDTO.setStoreId(rs.getInt("store_id"));
+				storeDTO.setMemberId(rs.getString("member_id"));
+				storeDTO.setThumb(rs.getString("thumb"));
+				list.add(storeDTO);
+			}
+
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("가게 정보 list로 가져오기 오류 " + e.getMessage());
+			return null;
+		} finally {
+			disconnectPstmt();
+		}
+	}
+
+	// 가게정보 수정(주소제외)
+	public synchronized boolean updateStore(StoreDTO storeDTO) throws SQLException {
+		try {
+			conn = dbConn.getConn();
+			query = new StringBuffer();
+
+			query.append("UPDATE store ");
+			query.append("SET ");
+			query.append(
+					"category = ?, notice = ?, tel = ?, thumb = ?, open_time = ?, close_time = ?, rest_day = ?, braketime_start = ?, braketime_end = ?, store_name = ?  ");
+			query.append("WHERE store_id = ? ");
+
+			pstmt = conn.prepareStatement(query.toString());
+			pstmt.setInt(1, storeDTO.getCategory());
+			pstmt.setString(2, storeDTO.getNotice());
+			pstmt.setString(3, storeDTO.getTel());
+			pstmt.setString(4, storeDTO.getThumb());
+			pstmt.setInt(5, storeDTO.getOpenTime());
+			pstmt.setInt(6, storeDTO.getCloseTime());
+			pstmt.setInt(7, storeDTO.getRestDay());
+			pstmt.setInt(8, storeDTO.getBraketimeStart());
+			pstmt.setInt(9, storeDTO.getBraketimeEnd());
+			pstmt.setString(10, storeDTO.getStoreName());
+			pstmt.setInt(11, storeDTO.getStoreId());
+
+			pstmt.executeUpdate();
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("가게 정보 수정하기 오류 " + e.getMessage());
+			return false;
+		} finally {
+			disconnectPstmt();
+		}
+	}
+
+	// 가게상태 수정
+	public synchronized boolean updateStatus(int status, int storeId) throws SQLException {
+		try {
+			conn = dbConn.getConn();
+			query = new StringBuffer();
+
+			query.append("UPDATE store ");
+			query.append("SET ");
+			query.append("status = ?  ");
+			query.append("WHERE store_id = ? ");
+
+			pstmt = conn.prepareStatement(query.toString());
+			pstmt.setInt(1, status);
+			pstmt.setInt(2, storeId);
+
+			pstmt.executeUpdate();
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("가게상태 수정 오류 " + e.getMessage());
+			return false;
+		} finally {
+			disconnectPstmt();
+		}
+	}
+
+	// 가게 삭제
+	// 가게삭제 - 삭제 성공 시 true, 실패 시 false
+	public synchronized boolean deleteStore(int storeId) throws SQLException {
+		try {
+
+			conn = dbConn.getConn();
+			query = new StringBuffer();
+			query.append("DELETE FROM store ");
+			query.append("WHERE store_id = ?");
+
+			pstmt = conn.prepareStatement(query.toString());
+			
+			pstmt.setInt(1, storeId);
+
+			if (pstmt.executeUpdate() != 1) {
+				return false;
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("StoreDAO_가게삭제_ERROR" + e.getMessage());
+			return false;
+		} finally {
+			disconnectPstmt();
+		}
+	}
+	
+	//가게 주소 수정하기
+	public synchronized boolean updateAddress(int storeId, String address, double x, double y) throws SQLException{
+		try {
+			conn = dbConn.getConn();
+			query = new StringBuffer();
+
+			query.append("UPDATE store ");
+			query.append("SET ");
+			query.append("address = ?,  ");
+			query.append("address_x = ?,  ");
+			query.append("address_y = ?  ");
+			query.append("WHERE store_id = ? ");
+
+			pstmt = conn.prepareStatement(query.toString());
+			pstmt.setString(1, address);
+			pstmt.setDouble(2, x);
+			pstmt.setDouble(3, y);
+			pstmt.setInt(4, storeId);
+
+			pstmt.executeUpdate();
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("가게 주소 수정하기 " + e.getMessage());
+			return false;
+		} finally {
+			disconnectPstmt();
 		}
 	}
 }

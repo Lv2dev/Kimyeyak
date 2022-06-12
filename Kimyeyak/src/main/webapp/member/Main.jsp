@@ -106,7 +106,7 @@ body {
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">리뷰관리</a></li>
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">내주변</a></li>
+							aria-current="page" href="../member/NearStore">내주변</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="../member/MyAddress">주소관리</a></li>
 						<c:if test="${login == 0 }">
@@ -151,34 +151,34 @@ body {
 		<div
 			class="px-md-0 px-lg-5 mt-5 mb-3 row justify-content-center container col-12">
 			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
-				<button class="btn btn-lg btn-secondary content" type="button">한식</button>
+				<button class="btn btn-lg btn-secondary content" type="button" onclick="location.href='../member/CategorySearch?category=1'">한식</button>
 			</div>
 			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
-				<button class="btn btn-lg btn-secondary content" type="button">중식</button>
+				<button class="btn btn-lg btn-secondary content" type="button" onclick="location.href='../member/CategorySearch?category=2'">중식</button>
 			</div>
 			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
-				<button class="btn btn-lg btn-secondary content" type="button">일식</button>
+				<button class="btn btn-lg btn-secondary content" type="button" onclick="location.href='../member/CategorySearch?category=3'">일식</button>
 			</div>
 			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
-				<button class="btn btn-lg btn-secondary content" type="button">양식</button>
+				<button class="btn btn-lg btn-secondary content" type="button" onclick="location.href='../member/CategorySearch?category=4'">양식</button>
 			</div>
 			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
-				<button class="btn btn-lg btn-secondary content" type="button">아시안</button>
+				<button class="btn btn-lg btn-secondary content" type="button" onclick="location.href='../member/CategorySearch?category=5'">아시안</button>
 			</div>
 			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
-				<button class="btn btn-lg btn-secondary content" type="button">패밀리레스토랑</button>
+				<button class="btn btn-lg btn-secondary content" type="button" onclick="location.href='../member/CategorySearch?category=6'">패밀리레스토랑</button>
 			</div>
 			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
-				<button class="btn btn-lg btn-secondary content" type="button">뷔페</button>
+				<button class="btn btn-lg btn-secondary content" type="button" onclick="location.href='../member/CategorySearch?category=7'">뷔페</button>
 			</div>
 			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
-				<button class="btn btn-lg btn-secondary content" type="button">파인다이닝</button>
+				<button class="btn btn-lg btn-secondary content" type="button" onclick="location.href='../member/CategorySearch?category=8'">파인다이닝</button>
 			</div>
 			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
-				<button class="btn btn-lg btn-secondary content" type="button">오마카세</button>
+				<button class="btn btn-lg btn-secondary content" type="button" onclick="location.href='../member/CategorySearch?category=9'">오마카세</button>
 			</div>
 			<div class="box px-0 col-5 col-md-2 mx-1 mb-2">
-				<button class="btn btn-lg btn-secondary content" type="button">바베큐</button>
+				<button class="btn btn-lg btn-secondary content" type="button" onclick="location.href='../member/CategorySearch?category=10'">바베큐</button>
 			</div>
 
 		</div>

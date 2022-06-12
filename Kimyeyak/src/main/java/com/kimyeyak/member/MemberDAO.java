@@ -66,7 +66,8 @@ public class MemberDAO extends JDBConnect {
 		try {
 			conn = dbConn.getConn();
 			query = new StringBuffer();
-			query.append("INSERT INTO member(id, pw, name, nickname, tel, email, bday, jday, type, gender, question, answer) ");
+			query.append(
+					"INSERT INTO member(id, pw, name, nickname, tel, email, bday, jday, type, gender, question, answer) ");
 			query.append("VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 			// 현재시간 timestamp
@@ -294,7 +295,7 @@ public class MemberDAO extends JDBConnect {
 		try {
 			conn = dbConn.getConn();
 			query = new StringBuffer();
-			query.append("UPDATE user ");
+			query.append("UPDATE member ");
 			query.append("SET name = ?, ");
 			query.append(" nickname = ?, ");
 			query.append(" tel = ?, ");
@@ -334,7 +335,7 @@ public class MemberDAO extends JDBConnect {
 
 			conn = dbConn.getConn();
 			query = new StringBuffer();
-			query.append("DELETE FROM user ");
+			query.append("DELETE FROM member ");
 			query.append("WHERE id = ?");
 
 			pstmt = conn.prepareStatement(query.toString());
@@ -359,7 +360,7 @@ public class MemberDAO extends JDBConnect {
 		try {
 			conn = dbConn.getConn();
 			query = new StringBuffer();
-			query.append("update user set ");
+			query.append("update member set ");
 			query.append("address = ?, address_x = ?, address_y = ? where id = '" + mdto.getId() + "'");
 
 			pstmt = conn.prepareStatement(query.toString());
@@ -389,7 +390,7 @@ public class MemberDAO extends JDBConnect {
 			stmt = conn.createStatement();
 			query = new StringBuffer();
 
-			query.append("SELECT * FROM user ");
+			query.append("SELECT * FROM member ");
 			query.append("WHERE id = '" + id + "' and address IS NOT null");
 
 			rs = stmt.executeQuery(query.toString());
@@ -415,6 +416,67 @@ public class MemberDAO extends JDBConnect {
 			return null;
 		} finally {
 			disconnectStmt();
+		}
+	}
+
+	// 주소가 추가되어 있는지 확인하는 메서드
+	public synchronized boolean isAddressAdded(String userId) throws SQLException {
+		try {
+			conn = dbConn.getConn();
+			query = new StringBuffer();
+
+			query.append("select * from member where address is not null AND id = ?");// userId
+
+			pstmt = conn.prepareStatement(query.toString());
+			pstmt.setString(1, userId);
+			rs = pstmt.executeQuery();
+
+			int cnt = 0;
+			while (rs.next()) {
+				cnt++;
+			}
+
+			if (cnt == 0) { // address컬럼이 null이면
+				return false;
+			}
+			return true;
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			System.out.println("주소가 추가되어 있는지 확인하는 메서드 isAddressAdded() 오류 " + e.getMessage());
+			return false;
+		} finally {
+			disconnectPstmt();
+		}
+	}
+
+	// 주소추가
+	public synchronized boolean newAddress(Double x, Double y, String address, String userId) throws SQLException {
+		try {
+			conn = dbConn.getConn();
+			query = new StringBuffer();
+			query.append("update member set ");
+			query.append("address = ?, address_x = ?, address_y = ? where id = ?");
+
+			pstmt = conn.prepareStatement(query.toString());
+
+			pstmt.setString(1, address);
+			pstmt.setDouble(2, x);
+			pstmt.setDouble(3, y);
+			pstmt.setString(4, userId);
+
+			if (pstmt.executeUpdate() != 1) {
+				return false;
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			System.out.println("주소추가에러 " + e.getMessage());
+			return false;
+		} finally {
+			disconnectPstmt();
 		}
 	}
 

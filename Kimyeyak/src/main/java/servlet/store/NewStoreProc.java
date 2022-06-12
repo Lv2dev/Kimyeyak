@@ -3,6 +3,7 @@ package servlet.store;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -51,7 +52,7 @@ public class NewStoreProc extends HttpServlet {
 		storeDTO.setTel(req.getParameter("tel"));
 		storeDTO.setThumb("");
 		
-		Date tempDate = Date.valueOf(req.getParameter("openTime"));
+		Timestamp tempDate = Timestamp.valueOf(req.getParameter("openTime"));
 		int openTime = (tempDate.getHours() * 60) + tempDate.getMinutes();
 		
 		storeDTO.setOpenTime(openTime); //open_time

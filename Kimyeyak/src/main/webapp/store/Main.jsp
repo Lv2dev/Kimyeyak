@@ -6,9 +6,10 @@ request.setCharacterEncoding("UTF-8");
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
-<title>예약은 김예약</title>
+<title>김예약</title>
 <!-- bootstrap -->
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
@@ -36,7 +37,8 @@ body {
 .box:before {
 	content: "";
 	display: block;
-	padding-top: 100%; /* 1:1 비율 */
+	padding-top: 100%;
+	/* 1:1 비율 */
 }
 
 .content {
@@ -67,6 +69,7 @@ body {
 }
 </style>
 </head>
+
 <body class="row justify-content-center">
 	<!--  <div class="container">
 		<header
@@ -101,14 +104,6 @@ body {
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">내정보</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="../member/Order">예약관리</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">리뷰관리</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="../member/NearStore">내주변</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="../member/MyAddress">주소관리</a></li>
 						<c:if test="${login == 0 }">
 							<li class="nav-item mx-lg-3 mx-0 mt-1 mt-lg-0"><button
 									type="button" class="btn btn-primary"
@@ -127,85 +122,33 @@ body {
 		</nav>
 	</header>
 	</div>
-	<main class="row justify-content-center container">
+	<main class="row justify-content-center">
 		<section class="py-5 px-0 mx-0 text-center container">
 			<div class="pt-lg-5 pb-lg-3 px-0 mx-0 text-center">
-				<div class="col-lg-6 col-md-8 mx-auto my-5">
-					<h1 class="m-0 mb-3" style="font-weight: 800;">${ storeDTO.storeName }</h1>
-					<p class="lead text-muted" style="font-weight: 400;">
-						<c:if test="${ storeDTO.status == 0 }">
-						지금은 예약을 받지 않습니다.
-						</c:if>
-						<c:if test="${ storeDTO.status > 0 }">
-						예약 버튼을 눌러 일정을 선택 후 예약을 잡을 수 있습니다.
-						</c:if>
-					</p>
+				<div class="col-lg-6 col-md-8 mx-auto my-auto">
+					<h1 class="fw-light">김예약</h1>
+					<p class="lead text-muted">전국의 자영업 사장님들 힘내세요</p>
 				</div>
 			</div>
 		</section>
+
+		<!-- 가게 목록 -->
+
 		<div
-			class="px-md-0 px-lg-5 p-0 mx-0 mb-3  row justify-content-center container col-11 col-md-7">
+			class="px-md-0 px-lg-5 mt-5 mb-3 row justify-content-center container col-12">
+			<c:forEach items="${ storeList }" var="item">
 
-			<div
-				class="col-12 p-0 px-1 m-0 h-50 container row justify-content-center mt-5">
-				<!--  -->
+
 				<div
-					class="col-12 col-md-12 mb-2 py-1 h-100 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
-					style="clear: both;">
-					<div class="col-4 col-md-3 m-1 text-center">
-						<img alt="가게이미지" src="${ storeDTO.thumb }">
-					</div>
-					<div
-						class="col-6 col-md-7 m-1 text-left container row justify-content-left ">
-						<h5 class="m-0 col-12 text-left" style="font-weight: 400;">${ storeDTO.notice }</h5>
-						<div class="col-12 container row justify-content-right  pt-4 ">
-
-							<!-- 예약 가능한 상태이면 예약하기 버튼 출력 -->
-							<c:if test="${ storeDTO.status == 1 }">
-								<div class="col-4">
-									<input type="button" class="btn btn-primary "
-										style="font-weight: 700;" value="예약하기"
-										onclick="location.href='../member/Yeyak'">
-								</div>
-							</c:if>
-							<div class="col-4">
-								<input type="button" class="btn btn-primary "
-									style="font-weight: 700;" value="정보보기"
-									onclick="location.href='../member/StoreInfo'">
-							</div>
-						</div>
-
-					</div>
-
+					class="col-10 col-md-10 mx-1 mb-2 container row justify-content-center shadow-lg rounded bg-body align-items-center"
+					onclick="location.href='../store/MyStore?storeId=${item.storeId}'">
+					<img alt="가게이미지" src="${ item.thumb }" class="col-10 col-md-3">
+					<b class="col-7">${item.storeName }</b>
 				</div>
-			</div>
-			<div
-				class="col-12 p-0 px-1 m-0 container row justify-content-center mt-5">
-				<div
-					class="col-12 col-md-12 mb-2 container row justify-content-left align-items-center m-0 pl-auto"
-					style="font-weight: 400">
-					<h4>메뉴 목록</h4>
-				</div>
-				<!-- 메뉴목록 -->
-				<c:forEach items="${ menuList }" var="item">
-					<div
-						class="col-12 col-md-12 mb-2 h-75 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
-						style="clear: both;">
-						<div class="col-4 col-md-3 m-1 text-center">
-							<img alt="메뉴이미지" src="${ item.pic }">
-						</div>
-						<div class="col-6 col-md-7 m-1 text-center">
-							<h3>${ item.menuName }</h3>
-							<br>
-							<h5>${ item.price }원</h5>
-						</div>
-					</div>
-				</c:forEach>
-			</div>
 
+			</c:forEach>
 		</div>
 	</main>
-
-
 </body>
+
 </html>

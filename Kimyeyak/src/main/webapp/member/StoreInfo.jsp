@@ -106,7 +106,7 @@ body {
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">리뷰관리</a></li>
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">내주변</a></li>
+							aria-current="page" href="../member/NearStore">내주변</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="../member/MyAddress">주소관리</a></li>
 						<c:if test="${login == 0 }">

@@ -106,7 +106,7 @@ body {
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">리뷰관리</a></li>
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">내주변</a></li>
+							aria-current="page" href="../member/NearStore">내주변</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="../member/MyAddress">주소관리</a></li>
 						<c:if test="${login == 0 }">
@@ -151,26 +151,26 @@ body {
 		<div
 			class="px-md-0 px-lg-5 mt-5 mb-3 row justify-content-center container col-12">
 			<c:forEach items="${ searchList }" var="item">
-				<div class="col-10 col-md-10 mx-1 mb-2 container row justify-content-center shadow-lg rounded bg-body align-items-center" style="height:100%;"
+				<div class="col-10 col-md-10 mx-1 mb-2 container row justify-content-center shadow-lg rounded bg-body align-items-center"
 				 onclick="location.href='../member/Store?storeId=${item.storeId}'">
 				<img alt="가게이미지" src="${ item.thumb }" class="col-10 col-md-3">
 				<b class="col-7">${item.storeName }</b>
 				</div>
 			</c:forEach>
 			<div class="col-12 col-md-7 mx-5 my-5 container row justify-content-center shadow-lg rounded bg-body">
-				<c:if test="${page > 10}">
-					<div class="col-1"><a href="../member/Search?page=${ page - 10 }">이전</a></div>
+				<c:if test="${ page > pageCount }">
+					<div class="col-1"><a href="../member/Search?page=${ start - 1 }&keyword=${keyword}">이전</a></div>
 				</c:if>
 				<c:forEach var="i" begin ="${ start }" end="${ end }" step="1">
 				<c:if test="${ i == page }">
 					<div class="col-1"><b>${ page }</b></div>
 				</c:if>
 				<c:if test="${ i != page }">
-					<div class="col-1"><a href="../member/Search?page=${ i }">${ i }</a></div>
+					<div class="col-1"><a href="../member/Search?page=${ i }&keyword=${keyword}">${ i }</a></div>
 				</c:if>
 				</c:forEach>
-				<c:if test="${ page < 10 && pages > 10 }">
-					<div class="col-1"><a href="../member/Search?page=${ end + 1 }">다음</a></div>
+				<c:if test="${ end < pages }">
+					<div class="col-1"><a href="../member/Search?page=${ end + 1 }&keyword=${keyword}">다음</a></div>
 				</c:if>
 			</div>
 		</div>

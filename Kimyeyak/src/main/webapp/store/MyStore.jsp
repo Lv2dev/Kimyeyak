@@ -101,14 +101,6 @@ body {
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">내정보</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="../member/Order">예약관리</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">리뷰관리</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="../member/NearStore">내주변</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="../member/MyAddress">주소관리</a></li>
 						<c:if test="${login == 0 }">
 							<li class="nav-item mx-lg-3 mx-0 mt-1 mt-lg-0"><button
 									type="button" class="btn btn-primary"
@@ -134,12 +126,24 @@ body {
 					<h1 class="m-0 mb-3" style="font-weight: 800;">${ storeDTO.storeName }</h1>
 					<p class="lead text-muted" style="font-weight: 400;">
 						<c:if test="${ storeDTO.status == 0 }">
-						지금은 예약을 받지 않습니다.
+						지금은 예약을 받지 않습니다. 예약받기 버튼을 눌러 예약을 받을 수 있습니다.
 						</c:if>
 						<c:if test="${ storeDTO.status > 0 }">
-						예약 버튼을 눌러 일정을 선택 후 예약을 잡을 수 있습니다.
+						예약을 받는 중입니다. 예약닫기 버튼을 눌러 예약을 멈출 수 있습니다.
 						</c:if>
 					</p>
+					<c:if test="${ storeDTO.status == 0 }">
+						<button type="button" class="btn btn-primary"
+							onclick="location.href='../store/ChgStatus?status=1&storeId=${storeDTO.storeId}';">예약받기</button>
+					</c:if>
+					<c:if test="${ storeDTO.status > 0 }">
+						<button type="button" class="btn btn-primary"
+							onclick="location.href='../store/ChgStatus?status=0&storeId=${storeDTO.storeId}';">예약닫기</button>
+					</c:if>
+					<button type="button" class="btn btn-primary"
+						onclick="location.href='../store/AddMenu?storeId=${ storeDTO.storeId }';">메뉴추가</button>
+					<button type="button" class="btn btn-primary"
+						onclick="location.href='../store/DelStore?storeId=${ storeDTO.storeId }';">가게삭제</button>
 				</div>
 			</div>
 		</section>
@@ -147,31 +151,22 @@ body {
 			class="px-md-0 px-lg-5 p-0 mx-0 mb-3  row justify-content-center container col-11 col-md-7">
 
 			<div
-				class="col-12 p-0 px-1 m-0 h-50 container row justify-content-center mt-5">
+				class="col-12 p-0 px-1 m-0 container row justify-content-center mt-5">
 				<!--  -->
 				<div
-					class="col-12 col-md-12 mb-2 py-1 h-100 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
+					class="col-12 col-md-12 mb-2 py-1 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
 					style="clear: both;">
 					<div class="col-4 col-md-3 m-1 text-center">
-						<img alt="가게이미지" src="${ storeDTO.thumb }">
+						<img alt="가게이미지" src="${ storeDTO.thumb }" class="w-100">
 					</div>
 					<div
 						class="col-6 col-md-7 m-1 text-left container row justify-content-left ">
 						<h5 class="m-0 col-12 text-left" style="font-weight: 400;">${ storeDTO.notice }</h5>
 						<div class="col-12 container row justify-content-right  pt-4 ">
-
-							<!-- 예약 가능한 상태이면 예약하기 버튼 출력 -->
-							<c:if test="${ storeDTO.status == 1 }">
-								<div class="col-4">
-									<input type="button" class="btn btn-primary "
-										style="font-weight: 700;" value="예약하기"
-										onclick="location.href='../member/Yeyak'">
-								</div>
-							</c:if>
 							<div class="col-4">
 								<input type="button" class="btn btn-primary "
 									style="font-weight: 700;" value="정보보기"
-									onclick="location.href='../member/StoreInfo'">
+									onclick="location.href='../store/MyStoreDetail'">
 							</div>
 						</div>
 
@@ -189,16 +184,26 @@ body {
 				<!-- 메뉴목록 -->
 				<c:forEach items="${ menuList }" var="item">
 					<div
-						class="col-12 col-md-12 mb-2 h-75 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
+						class="col-12 col-md-12 mb-3 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
 						style="clear: both;">
 						<div class="col-4 col-md-3 m-1 text-center">
-							<img alt="메뉴이미지" src="${ item.pic }">
+							<img alt="메뉴이미지" src="${ item.pic }" class="w-100"
+								style="vertical-align: middle">
 						</div>
-						<div class="col-6 col-md-7 m-1 text-center">
+						<div class="col-6 col-md-7  text-center">
 							<h3>${ item.menuName }</h3>
 							<br>
 							<h5>${ item.price }원</h5>
+							<h5>${ item.notice }</h5>
 						</div>
+						<div class="col-12 text-center p-2 mt-0">
+							<button type="button" class="btn btn-primary"
+								onclick="location.href='../store/DelMenu?menuId=${ item.menuId }'">메뉴삭제</button>
+
+							<button type="button" class="btn btn-primary"
+								onclick="location.href='../store/EditMenu?menuId=${ item.menuId }'">메뉴수정</button>
+						</div>
+
 					</div>
 				</c:forEach>
 			</div>
