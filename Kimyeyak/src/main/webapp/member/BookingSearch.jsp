@@ -90,7 +90,7 @@ body {
 		<nav class="navbar navbar-expand-lg navbar-light"
 			style="background-color: #e3f2fd;">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="../member/Main"><b>김예약</a>
+				<a class="navbar-brand" href="../member/Main">김예약</a>
 				<button class="navbar-toggler" type="button"
 					data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
 					aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -106,7 +106,7 @@ body {
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">리뷰관리</a></li>
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">내주변</a></li>
+							aria-current="page" href="../member/NearStore">내주변</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="../member/MyAddress">주소관리</a></li>
 						<c:if test="${login == 0 }">
@@ -131,39 +131,26 @@ body {
 		<section class="py-5 px-0 mx-0 text-center container">
 			<div class="pt-lg-5 pb-lg-3 px-0 mx-0 text-center">
 				<div class="col-lg-6 col-md-8 mx-auto my-auto">
-					<h1 class="fw-light">카테고리</h1>
-					<p class="lead text-muted">"${ categoryStr }"</p>
+					<h1 class="fw-light">${ storeDTO.storeName }</h1>
+					<p class="lead text-muted">에서 예약조건으로 검색합니다</p>
 				</div>
 			</div>
 		</section>
-		<div
-			class="px-md-0 px-lg-5 mt-5 mb-3 row justify-content-center container col-12">
-			<c:forEach items="${ searchList }" var="item">
-				<div class="col-10 col-md-10 mx-1 mb-2 container row justify-content-center shadow-lg rounded bg-body align-items-center"
-				 onclick="location.href='../member/Store?storeId=${item.storeId}'">
-				 <div class="col-10 col-md-3 p-3">
-				 <img alt="가게이미지" src="${ item.thumb }" class="w-100">
-				 </div>
-				
-				<b class="col-7 text-center">${item.storeName }</b>
+		<div class=" pb-5 mb-5 row justify-content-center col-lg-8 col-md-12">
+			<form class="row justify-content-center container col-12" action="../member/Booking?storeId=${storeDTO.storeId }" method="post">
+				<div class="col-6 col-md-4">
+					<input type="number" class="form-control h-3" style="height: 100%;"
+						placeholder="인원 수 입력" aria-label="Search" name="people">
 				</div>
-			</c:forEach>
-			<div class="col-12 col-md-7 mx-5 my-5 container row justify-content-center shadow-lg rounded bg-body">
-				<c:if test="${ page > pageCount }">
-					<div class="col-1"><a href="../member/CategorySearch?page=${ start - 1 }&category=${category}">이전</a></div>
-				</c:if>
-				<c:forEach var="i" begin ="${ start }" end="${ end }" step="1">
-				<c:if test="${ i == page }">
-					<div class="col-1"><b>${ page }</b></div>
-				</c:if>
-				<c:if test="${ i != page }">
-					<div class="col-1"><a href="../member/CategorySearch?page=${ i }&category=${category}">${ i }</a></div>
-				</c:if>
-				</c:forEach>
-				<c:if test="${ end < pages }">
-					<div class="col-1"><a href="../member/CategorySearch?page=${ end + 1 }&category=${category}">다음</a></div>
-				</c:if>
-			</div>
+				<div class="col-6 col-md-4">
+					<input type="date" class="form-control h-3" style="height: 100%;"
+						placeholder="예약일 입력" aria-label="Search" name="date">
+				</div>
+				<div class="col-4">
+					<button class="w-100 btn btn-lg btn-outline-primary"
+						style="height: 100%;" type="submit">검색</button>
+				</div>
+			</form>
 		</div>
 	</main>
 </body>

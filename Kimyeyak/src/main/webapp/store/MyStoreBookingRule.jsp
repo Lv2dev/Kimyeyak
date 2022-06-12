@@ -4,6 +4,7 @@
 request.setCharacterEncoding("UTF-8");
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -101,14 +102,6 @@ body {
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">내정보</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="../member/Order">예약관리</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">리뷰관리</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="../member/NearStore">내주변</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="../member/MyAddress">주소관리</a></li>
 						<c:if test="${login == 0 }">
 							<li class="nav-item mx-lg-3 mx-0 mt-1 mt-lg-0"><button
 									type="button" class="btn btn-primary"
@@ -132,14 +125,8 @@ body {
 			<div class="pt-lg-5 pb-lg-3 px-0 mx-0 text-center">
 				<div class="col-lg-6 col-md-8 mx-auto my-5">
 					<h1 class="m-0 mb-3" style="font-weight: 800;">${ storeDTO.storeName }</h1>
-					<p class="lead text-muted" style="font-weight: 400;">
-						<c:if test="${ storeDTO.status == 0 }">
-						지금은 예약을 받지 않습니다.
-						</c:if>
-						<c:if test="${ storeDTO.status > 0 }">
-						예약 버튼을 눌러 일정을 선택 후 예약을 잡을 수 있습니다.
-						</c:if>
-					</p>
+					<p class="lead text-muted" style="font-weight: 400;">예약 규칙을
+						관리합니다</p>
 				</div>
 			</div>
 		</section>
@@ -148,60 +135,98 @@ body {
 
 			<div
 				class="col-12 p-0 px-1 m-0 container row justify-content-center mt-5">
-				<!--  -->
+				<c:if test="${ empty bookingRuleList }">
 				<div
-					class="col-12 col-md-12 mb-2 py-1 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
-					style="clear: both;">
-					<div class="col-4 col-md-3 m-1 text-center">
-						<img alt="가게이미지" src="${ storeDTO.thumb }" class="w-100">
-					</div>
-					<div
-						class="col-6 col-md-7 m-1 text-left container row justify-content-left ">
-						<h5 class="m-0 col-12 text-left" style="font-weight: 400;">${ storeDTO.notice }</h5>
-						<div class="col-12 container row justify-content-right  pt-4 ">
-
-							<!-- 예약 가능한 상태이면 예약하기 버튼 출력 -->
-							<c:if test="${ storeDTO.status == 1 && login == 1 }">
-								<div class="col-4">
-									<input type="button" class="btn btn-primary "
-										style="font-weight: 700;" value="예약하기"
-										onclick="location.href='../member/BookingSearch?storeId=${ storeDTO.storeId }'">
-								</div>
-							</c:if>
-							<div class="col-4">
-								<input type="button" class="btn btn-primary "
-									style="font-weight: 700;" value="정보보기"
-									onclick="location.href='../member/StoreInfo'">
-							</div>
-						</div>
-
-					</div>
-
-				</div>
-			</div>
-			<div
-				class="col-12 p-0 px-1 m-0 container row justify-content-center mt-5">
-				<div
-					class="col-12 col-md-12 mb-2 container row justify-content-left align-items-center m-0 pl-auto"
+					class="col-12 col-md-12 mb-4 container row justify-content-left align-items-center m-0 pt-0 pl-auto text-center "
 					style="font-weight: 400">
-					<h4>메뉴 목록</h4>
+					<h4>규칙이 없어요</h4>
 				</div>
-				<!-- 메뉴목록 -->
-				<c:forEach items="${ menuList }" var="item">
+				</c:if>
+				<!-- 예약목록 -->
+				<c:forEach items="${ bookingRuleList }" var="item">
 					<div
-						class="col-12 col-md-12 mb-2 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
+						class="col-12 col-md-12 mb-3 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
 						style="clear: both;">
-						<div class="col-4 col-md-3 m-1 text-center">
-							<img alt="메뉴이미지" src="${ item.pic }" class="w-100">
-						</div>
-						<div class="col-6 col-md-7 m-1 text-center">
-							<h3>${ item.menuName }</h3>
+						<div class="col-6 col-md-7  text-center">
+							<h3>
+								규칙명 : ${ item.notice }
+							</h3>
 							<br>
-							<h5>${ item.price }원</h5>
+							<h5>인원 : ${ item.minPeople } ~ ${ item.maxPeople }</h5>
+							<h5>예약받을 팀 수 : ${ item.count }</h5>
+							<h5>시간 : <fmt:formatDate value="${ item.time }" pattern="hh시 mm분" /></h5>
+						</div>
+						<div class="col-4 text-center p-2 mt-0">
+							<button type="button" class="btn btn-primary"
+								onclick="location.href='../store/DelStoreRuleProc?ruleId=${ item.id}&storeId=${ storeDTO.storeId }'">규칙
+								삭제</button>
 						</div>
 					</div>
 				</c:forEach>
 			</div>
+			<div
+				class="col-12 col-md-12 mb-2 container row justify-content-left align-items-center m-0 mt-5 pl-auto"
+				style="font-weight: 400">
+				<h4>규칙 추가하기</h4>
+				<h4 class="mb-3"></h4>
+				<form class="needs-validation" novalidate=""
+					action="../store/AddBookingRuleProc?storeId=${ storeDTO.storeId }"
+					method="post">
+					<div class="row g-3">
+						<!-- 최대인원 -->
+						<div class="col-12">
+							<label for="nickname" class="form-label">최소인원 </label> <input
+								type="number" class="form-control" id="tel" placeholder=""
+								name="minPeople" required="" title="숫자만 입력해 주세요"
+								oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+							<div class="invalid-feedback">최소인원을 입력해 주세요</div>
+						</div>
+
+						<!-- 최대인원 -->
+						<div class="col-12">
+							<label for="nickname" class="form-label">최대인원 </label> <input
+								type="number" class="form-control" id="tel" placeholder=""
+								name="maxPeople" required="" title="숫자만 입력해 주세요"
+								oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+							<div class="invalid-feedback">최대인원을 입력해 주세요</div>
+						</div>
+
+						<!-- 받을 팀 수 -->
+						<div class="col-12">
+							<label for="nickname" class="form-label">받을 팀 수 </label> <input
+								type="number" class="form-control" id="tel" placeholder=""
+								name="count" required="" title="숫자만 입력해 주세요"
+								oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+							<div class="invalid-feedback">팀 수를 입력해 주세요</div>
+						</div>
+						
+						<!-- 규칙명 -->
+						<div class="col-12">
+							<label for="nickname" class="form-label">규칙명 </label> <input
+								type="text" class="form-control" id="tel" placeholder=""
+								name="notice" required="" >
+							<div class="invalid-feedback">규칙명을 입력해 주세요</div>
+						</div>
+
+
+						<!-- 예약타임 -->
+						<div class="col-12">
+							<label for="pw" class="form-label">예약시간</label> <input
+								type="time" class="form-control" id="braketime_start"
+								placeholder="" name="time" required=""
+								value="${ brakeTimeStart }">
+							<div class="invalid-feedback">시간을 정해주세요</div>
+						</div>
+
+					</div>
+
+					<hr class="my-4">
+
+					<button class="w-100 btn btn-primary btn-lg" type="submit">예약규칙
+						추가하기</button>
+				</form>
+			</div>
+		</div>
 
 		</div>
 	</main>

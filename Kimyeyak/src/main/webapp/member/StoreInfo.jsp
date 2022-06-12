@@ -154,7 +154,7 @@ body {
 					style="clear: both;">
 					<div
 						class="col-4 col-md-3 m-1 text-center shadow-lg rounded-lg bg-body ">
-						<img alt="가게이미지" src="${ storeDTO.thumb }">
+						<img alt="가게이미지" src="${ storeDTO.thumb }" class="w-100">
 					</div>
 				</div>
 			</div>

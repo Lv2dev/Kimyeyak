@@ -143,7 +143,11 @@ body {
 					<button type="button" class="btn btn-primary"
 						onclick="location.href='../store/AddMenu?storeId=${ storeDTO.storeId }';">메뉴추가</button>
 					<button type="button" class="btn btn-primary"
+						onclick="location.href='../store/MyStoreBookingRule?storeId=${ storeDTO.storeId }';">예약규칙</button>
+					<button type="button" class="btn btn-primary"
 						onclick="location.href='../store/DelStore?storeId=${ storeDTO.storeId }';">가게삭제</button>
+					<button type="button" class="btn btn-primary"
+						onclick="location.href='../store/MyStoreBooking?storeId=${ storeDTO.storeId }';">예약확인</button>
 				</div>
 			</div>
 		</section>

@@ -4,6 +4,7 @@
 request.setCharacterEncoding("UTF-8");
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -90,7 +91,7 @@ body {
 		<nav class="navbar navbar-expand-lg navbar-light"
 			style="background-color: #e3f2fd;">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="../member/Main"><b>김예약</a>
+				<a class="navbar-brand" href="../member/Main">김예약</a>
 				<button class="navbar-toggler" type="button"
 					data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
 					aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -106,7 +107,7 @@ body {
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">리뷰관리</a></li>
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">내주변</a></li>
+							aria-current="page" href="../member/NearStore">내주변</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="../member/MyAddress">주소관리</a></li>
 						<c:if test="${login == 0 }">
@@ -131,38 +132,48 @@ body {
 		<section class="py-5 px-0 mx-0 text-center container">
 			<div class="pt-lg-5 pb-lg-3 px-0 mx-0 text-center">
 				<div class="col-lg-6 col-md-8 mx-auto my-auto">
-					<h1 class="fw-light">카테고리</h1>
-					<p class="lead text-muted">"${ categoryStr }"</p>
+					<h1 class="fw-light">${ storeDTO.storeName }</h1>
+					<p class="lead text-muted">${ people } 명, 
+					<fmt:formatDate value="${ date }" pattern="yyyy년 MM월 dd일" /> 의 조건으로 검색했어요.
+					</p>
 				</div>
 			</div>
 		</section>
 		<div
-			class="px-md-0 px-lg-5 mt-5 mb-3 row justify-content-center container col-12">
-			<c:forEach items="${ searchList }" var="item">
-				<div class="col-10 col-md-10 mx-1 mb-2 container row justify-content-center shadow-lg rounded bg-body align-items-center"
-				 onclick="location.href='../member/Store?storeId=${item.storeId}'">
-				 <div class="col-10 col-md-3 p-3">
-				 <img alt="가게이미지" src="${ item.thumb }" class="w-100">
-				 </div>
-				
-				<b class="col-7 text-center">${item.storeName }</b>
-				</div>
-			</c:forEach>
-			<div class="col-12 col-md-7 mx-5 my-5 container row justify-content-center shadow-lg rounded bg-body">
-				<c:if test="${ page > pageCount }">
-					<div class="col-1"><a href="../member/CategorySearch?page=${ start - 1 }&category=${category}">이전</a></div>
+			class="px-md-0 px-lg-5 p-0 mx-0 mb-3  row justify-content-center container col-11 col-md-7">
+
+			<div
+				class="col-12 p-0 px-1 m-0 container row justify-content-center mt-5">
+				<c:if test="${ empty bookingList}">
+					<div
+						class="col-12 col-md-12 mb-4 container row justify-content-left align-items-center m-0 pt-0 pl-auto text-center "
+						style="font-weight: 400">
+						<h4>예약이 없어요</h4>
+					</div>
 				</c:if>
-				<c:forEach var="i" begin ="${ start }" end="${ end }" step="1">
-				<c:if test="${ i == page }">
-					<div class="col-1"><b>${ page }</b></div>
-				</c:if>
-				<c:if test="${ i != page }">
-					<div class="col-1"><a href="../member/CategorySearch?page=${ i }&category=${category}">${ i }</a></div>
-				</c:if>
+				<!-- 예약목록 -->
+				<c:forEach items="${ bookingList }" var="item">
+				<c:if test="${ item.close == 0 }">
+					<div
+						class="col-12 col-md-12 mb-3 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
+						style="clear: both;">
+						<div class="col-6 col-md-7  text-center">
+							<h3>시간 :
+								<fmt:formatDate value="${ item.time }" pattern="hh시 mm분" /></h3>
+							<br>
+							<h5>남은 팀 : ${ item.team }</h5>
+							<h5>
+								예약가능 인원 : ${item.minPeople } ~ ${ item.maxPeople }
+							</h5>
+							<h5>예약명 : ${ item.notice }</h5>
+						</div>
+						<div class="col-4 text-center p-2 mt-0">
+							<button type="button" class="btn btn-primary"
+								onclick="location.href='../member/BookingProc?ruleId=${ item.ruleId}&storeId=${ storeDTO.storeId }&people=${ people }'">예약하기</button>
+						</div>
+					</div>
+					</c:if>
 				</c:forEach>
-				<c:if test="${ end < pages }">
-					<div class="col-1"><a href="../member/CategorySearch?page=${ end + 1 }&category=${category}">다음</a></div>
-				</c:if>
 			</div>
 		</div>
 	</main>

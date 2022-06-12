@@ -4,6 +4,7 @@
 request.setCharacterEncoding("UTF-8");
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -106,7 +107,7 @@ body {
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">리뷰관리</a></li>
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">내주변</a></li>
+							aria-current="page" href="../member/NearStore">내주변</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="../member/MyAddress">주소관리</a></li>
 						<c:if test="${login == 0 }">
@@ -131,37 +132,56 @@ body {
 		<section class="py-5 px-0 mx-0 text-center container">
 			<div class="pt-lg-5 pb-lg-3 px-0 mx-0 text-center">
 				<div class="col-lg-6 col-md-8 mx-auto my-auto">
-					<h1 class="fw-light">카테고리</h1>
-					<p class="lead text-muted">"${ categoryStr }"</p>
+					<h1 class="fw-light">내 예약 목록</h1>
+					<p class="lead text-muted">예약 날짜순으로 정렬됩니다</p>
 				</div>
 			</div>
 		</section>
 		<div
 			class="px-md-0 px-lg-5 mt-5 mb-3 row justify-content-center container col-12">
-			<c:forEach items="${ searchList }" var="item">
-				<div class="col-10 col-md-10 mx-1 mb-2 container row justify-content-center shadow-lg rounded bg-body align-items-center"
-				 onclick="location.href='../member/Store?storeId=${item.storeId}'">
-				 <div class="col-10 col-md-3 p-3">
-				 <img alt="가게이미지" src="${ item.thumb }" class="w-100">
-				 </div>
-				
-				<b class="col-7 text-center">${item.storeName }</b>
+			<c:forEach items="${ bookingList }" var="item">
+				<div
+					class="col-12 col-md-12 mb-3 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
+					style="clear: both;">
+					<div class="col-6 col-md-7  text-center">
+						<h3>가게명 : ${ item.storeName }</h3>
+						<br>
+						<h5>인원 : ${ item.people }</h5>
+						<h5>
+							시간 :
+							<fmt:formatDate value="${ item.time }" pattern="hh시 mm분" />
+						</h5>
+						<h5>예약명 : ${ item.notice }</h5>
+						<h5>상태 : 
+						<c:if test="${ item.state == 0 }">예약중</c:if>
+						<c:if test="${ item.state == 1 }">예약취소됨</c:if>
+						</h5>
+					</div>
 				</div>
 			</c:forEach>
-			<div class="col-12 col-md-7 mx-5 my-5 container row justify-content-center shadow-lg rounded bg-body">
+			<div
+				class="col-12 col-md-7 mx-5 my-5 container row justify-content-center shadow-lg rounded bg-body">
 				<c:if test="${ page > pageCount }">
-					<div class="col-1"><a href="../member/CategorySearch?page=${ start - 1 }&category=${category}">이전</a></div>
+					<div class="col-1">
+						<a href="../member/Search?page=${ start - 1 }&keyword=${keyword}">이전</a>
+					</div>
 				</c:if>
-				<c:forEach var="i" begin ="${ start }" end="${ end }" step="1">
-				<c:if test="${ i == page }">
-					<div class="col-1"><b>${ page }</b></div>
-				</c:if>
-				<c:if test="${ i != page }">
-					<div class="col-1"><a href="../member/CategorySearch?page=${ i }&category=${category}">${ i }</a></div>
-				</c:if>
+				<c:forEach var="i" begin="${ start }" end="${ end }" step="1">
+					<c:if test="${ i == page }">
+						<div class="col-1">
+							<b>${ page }</b>
+						</div>
+					</c:if>
+					<c:if test="${ i != page }">
+						<div class="col-1">
+							<a href="../member/Search?page=${ i }&keyword=${keyword}">${ i }</a>
+						</div>
+					</c:if>
 				</c:forEach>
 				<c:if test="${ end < pages }">
-					<div class="col-1"><a href="../member/CategorySearch?page=${ end + 1 }&category=${category}">다음</a></div>
+					<div class="col-1">
+						<a href="../member/Search?page=${ end + 1 }&keyword=${keyword}">다음</a>
+					</div>
 				</c:if>
 			</div>
 		</div>

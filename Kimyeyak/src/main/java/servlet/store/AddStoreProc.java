@@ -3,7 +3,6 @@ package servlet.store;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Enumeration;
 
 import javax.servlet.ServletContext;
@@ -21,13 +20,11 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 /**
- * 가게 정보를 수정하는 서블릿
+ * 가게 추가하는 서블릿
  */
-@WebServlet("/store/UpdateStoreProc")
-public class UpdateStoreProc extends HttpServlet {
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+@WebServlet("/store/AddStoreProc")
+public class AddStoreProc extends HttpServlet {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
@@ -52,19 +49,7 @@ public class UpdateStoreProc extends HttpServlet {
 			return;
 		}
 
-		// 세션에 storeDTO가 없으면 main으로 리턴
-		if (null == session.getAttribute("storeDTO")) {
-			response.sendRedirect("../store/Main");
-			return;
-		}
-
-		StoreDTO storeDTO = (StoreDTO) session.getAttribute("storeDTO");
-
-		// 세션의 가게정보와 유저정보가 일치하지 않으면 리턴
-		if (!storeDTO.getMemberId().equals(memberDTO.getId())) {
-			response.sendRedirect("../store/Main");
-			return;
-		}
+		StoreDTO storeDTO = new StoreDTO();
 
 		// 폼 데이터를 가져오기
 		String realFolder = ""; // 실제 경로
@@ -80,8 +65,6 @@ public class UpdateStoreProc extends HttpServlet {
 				new DefaultFileRenamePolicy());
 
 		try {
-			// storeDTO 갱신
-			storeDTO = StoreDAO.getInstance().getStoreInfo(storeDTO.getStoreId());
 
 			// 가게명
 			if (mr.getParameter("storeName") == null || mr.getParameter("storeName") == "") {
@@ -203,30 +186,13 @@ public class UpdateStoreProc extends HttpServlet {
 
 				}
 			}
-			// 새로운 파일이 들어왔을 때만
+			// 새로운 파일이 들어왔을 때
 			if (uploadFileName != null) {
-				// 기존에 파일이 있었을 때
-				if (storeDTO.getThumb() != null && storeDTO.getThumb() != "") {
-					// 기존에 있던 파일 제거
-
-					// 실제 경로 가져오기
-					String tempRealDir = this.getServletContext().getRealPath("../store/storePic");
-					// 파일명만 가져오기
-					String[] tempFileNameSlice = storeDTO.getThumb().split("/");
-					String tempFileName = tempFileNameSlice[tempFileNameSlice.length - 1]; // 파일명
-					// File
-					File file = new File(tempRealDir + tempFileName);
-
-					// 삭제하고자 하는 파일이 서버에 존재하면 삭제시킨다
-					if (file.exists()) {
-						file.delete();
-					}
-				}
 				storeDTO.setThumb(uploadFileName); // 파일경로 + 파일명 저장
 			}
 			
-			//가게 정보 수정
-			StoreDAO.getInstance().updateStore(storeDTO);
+			//가게 추가
+			StoreDAO.getInstance().addStore(storeDTO);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -234,7 +200,7 @@ public class UpdateStoreProc extends HttpServlet {
 		}
 
 		//이동
-		response.sendRedirect("../store/Main" + storeDTO.getStoreId());
+		response.sendRedirect("../store/Main");
 		return;
 	}
 }

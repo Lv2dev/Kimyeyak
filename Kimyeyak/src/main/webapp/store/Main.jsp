@@ -104,6 +104,8 @@ body {
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="#">내정보</a></li>
+						<li class="nav-item"><a class="nav-link active"
+							aria-current="page" href="../store/AddStore">가게추가</a></li>
 						<c:if test="${login == 0 }">
 							<li class="nav-item mx-lg-3 mx-0 mt-1 mt-lg-0"><button
 									type="button" class="btn btn-primary"
