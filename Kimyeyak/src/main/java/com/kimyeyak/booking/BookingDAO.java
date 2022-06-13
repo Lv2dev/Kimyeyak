@@ -111,7 +111,7 @@ public class BookingDAO extends JDBConnect {
 		}
 	}
 
-	// 예약규칙을 가져옴 오류
+	// 예약규칙을 가져옴
 	public synchronized BookingRuleDTO getStoreBookingRuleDTO(int ruleId) throws SQLException {
 		try {
 			conn = dbConn.getConn();
@@ -151,8 +151,7 @@ public class BookingDAO extends JDBConnect {
 
 			query.append(
 					"select * from booking_rule as rule inner join booking as booking on booking.rule_id = rule.id ");
-			query.append(
-					"where DATEDIFF(DATE_FORMAT(booking.booking_date, '%Y-%m-%d 00:00:00'), ?) = 1 AND booking.state = 0 AND booking.store_id = ?");
+			query.append("where DATEDIFF(booking.booking_date, ?) = 0 AND booking.state = 0 AND booking.store_id = ?");
 			// date
 			pstmt = conn.prepareStatement(query.toString());
 			pstmt.setTimestamp(1, date);
@@ -261,9 +260,8 @@ public class BookingDAO extends JDBConnect {
 
 			query.append(
 					"insert into booking (member_id, store_id, booking_date, people, state, rule_id, timestamp, time) select ?,?,?,?,?,?,? ");
-			query.append(
-					"from dual where not exists ( select id from close_booking where date = ? and rule_id = ? ) "); // 예약일,
-																														// rule_id
+			query.append("from dual where not exists ( select id from close_booking where date = ? and rule_id = ? ) "); // 예약일,
+																															// rule_id
 			query.append(
 					"and not exists (select * from ( select count(booking_id) as cnt from booking where rule_id = ? and booking_date = ? and state = 0) as temp ");
 			// rule_id, 예약일
@@ -282,7 +280,7 @@ public class BookingDAO extends JDBConnect {
 			String today = null;
 			today = formatter.format(cal.getTime());
 			Timestamp ts = Timestamp.valueOf(today);
-			
+
 			pstmt.setTimestamp(7, ts);
 			pstmt.setTimestamp(8, dto.getTime());
 			pstmt.setTimestamp(9, dto.getBookingDate());
@@ -302,27 +300,32 @@ public class BookingDAO extends JDBConnect {
 			disconnectPstmt();
 		}
 	}
-	
-	//내 예약 목록을 페이징해서 가져오기
-	public synchronized ArrayList<BookingDTO> getMyBookingList(int page, int pageCount, String memberId) throws SQLException{
+
+	// 내 예약 목록을 페이징해서 가져오기
+	public synchronized ArrayList<BookingDTO> getMyBookingList(int page, int pageCount, String memberId)
+			throws SQLException {
 		try {
 			conn = dbConn.getConn();
 			query = new StringBuffer();
-			
+
 			query.append("select * from (");
-			query.append("select b.store.id, b.booking_date, b.people, b.state, b.time, rownum() order(order by b.timestamp) as num, st.store_name "); 
-			query.append("from booking as b inner join store as st on b.store_id = st.store_id where b.member_id = ? ");//memberId
-			query.append(") as temp where num ? between ?");
-			
+			query.append(
+					"select b.store_id, b.booking_date, b.people, b.state, b.time, b.booking_id, b.timestamp, row_number() over(order by timestamp) as num, st.store_name ");
+			query.append(
+					"from booking as b inner join store as st on b.store_id = st.store_id where b.member_id = ? group by b.booking_id");// memberId
+			query.append(") as temp where num between ? and ?");
+
+			pstmt = conn.prepareStatement(query.toString());
+
 			pstmt.setString(1, memberId);
 			pstmt.setInt(2, (page - 1) * pageCount + 1);
 			pstmt.setInt(3, (page) * pageCount);
-			
+
 			rs = pstmt.executeQuery();
-			
+
 			ArrayList<BookingDTO> list = new ArrayList<BookingDTO>();
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				BookingDTO i = new BookingDTO();
 				i.setStoreId(rs.getInt("store_id"));
 				i.setBookingDate(rs.getTimestamp("booking_date"));
@@ -332,7 +335,7 @@ public class BookingDAO extends JDBConnect {
 				i.setStoreName(rs.getString("store_name"));
 				list.add(i);
 			}
-			
+
 			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -342,35 +345,128 @@ public class BookingDAO extends JDBConnect {
 			disconnectPstmt();
 		}
 	}
-	
-	//내 예약목록 갯수 가져오기
-	public synchronized int getMyBookingListCount(int page, int pageCount, String memberId) throws SQLException{
+
+	// 내 예약목록 갯수 가져오기
+	public synchronized int getMyBookingListCount(int page, int pageCount, String memberId) throws SQLException {
 		try {
 			conn = dbConn.getConn();
 			query = new StringBuffer();
-			
+
 			query.append("select count(*) as cnt from (");
-			query.append("select b.store.id, b.booking_date, b.people, b.state, b.time, rownum() order(order by b.timestamp) as num "); 
-			query.append("from booking as b inner join store as st on b.store_id = st.store_id where b.member_id = ? ");//memberId
+			query.append(
+					"select b.store_id, b.booking_date, b.people, b.state, b.time, b.timestamp, b.booking_id, row_number() over(order by timestamp) as num ");
+			query.append("from booking as b inner join store as st on b.store_id = st.store_id where b.member_id = ? ");// memberId
 			query.append(") as temp");
-			
+
+			pstmt = conn.prepareStatement(query.toString());
+
 			pstmt.setString(1, memberId);
-			pstmt.setInt(2, (page - 1) * pageCount + 1);
-			pstmt.setInt(3, (page) * pageCount);
-			
+
 			rs = pstmt.executeQuery();
-			
+
 			int cnt = 0;
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				cnt = rs.getInt("cnt");
 			}
-			
+
 			return cnt;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("내 예약목록 갯수 가져오기" + e.getMessage());
 			return 0;
+		} finally {
+			disconnectPstmt();
+		}
+	}
+
+	// 선택한 가게의 예약규칙들을 닫힘 정보와 함께 가져옴
+	public synchronized ArrayList<BookingRuleDTO> getStoreBookingRuleDTOListWithClose(int storeId, Timestamp ts)
+			throws SQLException {
+		try {
+			conn = dbConn.getConn();
+			query = new StringBuffer();
+
+			query.append("select * from ( ");
+			query.append(
+					"select r.id, r.min_people, r.store_id , r.max_people, r.time, r.count, r.notice, count(c.id) as close from booking_rule as r  ");
+			query.append("left join close_booking as c on r.id = c.rule_id and datediff(c.date, ?) = 0 ");
+			query.append(") temp where id is not null ");
+			pstmt = conn.prepareStatement(query.toString());
+			pstmt.setTimestamp(1, ts);
+			rs = pstmt.executeQuery();
+
+			ArrayList<BookingRuleDTO> list = new ArrayList<BookingRuleDTO>();
+			while (rs.next()) {
+				BookingRuleDTO i = new BookingRuleDTO();
+				i.setId(rs.getInt("id"));
+				i.setStoreId(rs.getInt("store_id"));
+				i.setMinPeople(rs.getInt("min_people"));
+				i.setMaxPeople(rs.getInt("max_people"));
+				i.setCount(rs.getInt("count"));
+				i.setTime(rs.getTimestamp("time"));
+				i.setNotice(rs.getString("notice"));
+				i.setClose(rs.getInt("close"));
+				list.add(i);
+			}
+
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("내 가게 예약규칙 리스트 가져오기 오류" + e.getMessage());
+			return null;
+		} finally {
+			disconnectPstmt();
+		}
+	}
+
+	// 예약 닫기
+	public synchronized boolean closeBooking(int ruleId, Timestamp ts) throws SQLException {
+		try {
+			conn = dbConn.getConn();
+			query = new StringBuffer();
+
+			query.append(
+					"insert into close_booking (rule_id, date) select ?,? ");
+			query.append("from dual where not exists ( select id from close_booking where rule_id = ? and date = ? ) "); // rule_id, 예약일
+			pstmt = conn.prepareStatement(query.toString());
+			
+			pstmt.setInt(1, ruleId);
+			pstmt.setTimestamp(2, ts);
+			pstmt.setInt(3, ruleId);
+			pstmt.setTimestamp(4, ts);
+
+			pstmt.executeUpdate();
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("예약 닫기" + e.getMessage());
+			return false;
+		} finally {
+			disconnectPstmt();
+		}
+	}
+	
+	// 예약 열기
+	public synchronized boolean openBooking(int ruleId, Timestamp ts) throws SQLException {
+		try {
+			conn = dbConn.getConn();
+			query = new StringBuffer();
+
+			query.append("delete from close_booking where rule_id = ? and date = ?");
+			pstmt = conn.prepareStatement(query.toString());
+			
+			pstmt.setInt(1, ruleId);
+			pstmt.setTimestamp(2, ts);
+
+			pstmt.executeUpdate();
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("예약 열기" + e.getMessage());
+			return false;
 		} finally {
 			disconnectPstmt();
 		}

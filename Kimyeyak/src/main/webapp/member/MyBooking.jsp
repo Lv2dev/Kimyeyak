@@ -101,11 +101,9 @@ body {
 				<div class="collapse navbar-collapse " id="navbarSupportedContent">
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">내정보</a></li>
+							aria-current="page" href="../member/MyInfo">내정보</a></li>
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="../member/Order">예약관리</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">리뷰관리</a></li>
+							aria-current="page" href="../member/MyBooking">예약관리</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="../member/NearStore">내주변</a></li>
 						<li class="nav-item"><a class="nav-link active"
@@ -151,7 +149,6 @@ body {
 							시간 :
 							<fmt:formatDate value="${ item.time }" pattern="hh시 mm분" />
 						</h5>
-						<h5>예약명 : ${ item.notice }</h5>
 						<h5>상태 : 
 						<c:if test="${ item.state == 0 }">예약중</c:if>
 						<c:if test="${ item.state == 1 }">예약취소됨</c:if>

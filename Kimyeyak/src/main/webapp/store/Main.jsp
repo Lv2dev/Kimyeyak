@@ -103,7 +103,7 @@ body {
 				<div class="collapse navbar-collapse " id="navbarSupportedContent">
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">내정보</a></li>
+							aria-current="page" href="../member/MyInfo">내정보</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="../store/AddStore">가게추가</a></li>
 						<c:if test="${login == 0 }">
@@ -144,7 +144,10 @@ body {
 				<div
 					class="col-10 col-md-10 mx-1 mb-2 container row justify-content-center shadow-lg rounded bg-body align-items-center"
 					onclick="location.href='../store/MyStore?storeId=${item.storeId}'">
-					<img alt="가게이미지" src="${ item.thumb }" class="col-10 col-md-3">
+					<div class="col-5 col-md-3" >
+					<img alt="가게이미지" src="${ item.thumb }" class="w-100">
+					</div>
+					
 					<b class="col-7">${item.storeName }</b>
 				</div>
 

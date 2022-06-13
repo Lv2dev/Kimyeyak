@@ -60,7 +60,7 @@ request.setCharacterEncoding("UTF-8");
 
 			<div class="row justify-content-center">
 				<div class="col-md-7 col-lg-8">
-					<h4 class="mb-3"><%= request.getAttribute("notice") %></h4>
+					<h4 class="mb-3"></h4>
 					<form class="needs-validation" novalidate="" action="../member/UpdateProc" method="post">
 						<div class="row g-3">
 

@@ -121,7 +121,7 @@ request.setCharacterEncoding("UTF-8");
 								<span>카테고리</span>
 								<div>
 									<input type="radio" name="category" value="1"
-										 />한식
+										 checked />한식
 									<input type="radio" name="category" value="2"
 										 />중식
 									<input type="radio" name="category" value="3"

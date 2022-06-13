@@ -24,7 +24,8 @@ import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
  */
 @WebServlet("/store/AddStoreProc")
 public class AddStoreProc extends HttpServlet {
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
@@ -72,21 +73,20 @@ public class AddStoreProc extends HttpServlet {
 				return;
 			}
 			storeDTO.setStoreName(mr.getParameter("storeName"));
-			
+
 			// 공지사항
 			if (mr.getParameter("notice") == null || mr.getParameter("notice") == "") {
 				response.sendRedirect("../store/Main");
 				return;
 			}
 			storeDTO.setNotice(mr.getParameter("notice"));
-			
-			//전화번호
+
+			// 전화번호
 			if (mr.getParameter("tel") == null || mr.getParameter("tel") == "") {
 				response.sendRedirect("../store/Main");
 				return;
 			}
 			storeDTO.setTel(mr.getParameter("tel"));
-			
 
 			// 카테고리
 			if (mr.getParameter("category") == null || mr.getParameter("category") == "") {
@@ -100,67 +100,76 @@ public class AddStoreProc extends HttpServlet {
 				response.sendRedirect("../store/Main");
 				return;
 			}
-			String openTimeTemp[] = mr.getParameter("openTime").split(":");
-			storeDTO.setOpenTime(Integer.parseInt(openTimeTemp[0]) * 60
-					+ Integer.parseInt(openTimeTemp[1]));
+			String temp = "1999:12:31 00:00:00";
+			temp = mr.getParameter("openTime");
+			String openTimeTemp[] = temp.split(":");
+			storeDTO.setOpenTime(Integer.parseInt(openTimeTemp[0]) * 60 + Integer.parseInt(openTimeTemp[1]));
 
 			// 가게닫는시간
 			if (mr.getParameter("closeTime") == null || mr.getParameter("closeTime") == "") {
 				response.sendRedirect("../store/Main");
 				return;
 			}
-			String closeTimeTemp[] = mr.getParameter("closeTime").split(":");
-			storeDTO.setOpenTime(Integer.parseInt(closeTimeTemp[0]) * 60
-					+ Integer.parseInt(closeTimeTemp[1]));
+			temp = "1999:12:31 00:00:00";
+			temp = mr.getParameter("closeTime");
+			String closeTimeTemp[] = temp.split(":");
+			storeDTO.setOpenTime(Integer.parseInt(closeTimeTemp[0]) * 60 + Integer.parseInt(closeTimeTemp[1]));
 
 			// 쉬는시간 시작
 			if (mr.getParameter("brakeTimeStart") == null || mr.getParameter("brakeTimeStart") == "") {
 				response.sendRedirect("../store/Main");
 				return;
 			}
-			String brakeTimeStartTemp[] = mr.getParameter("brakeTimeStart").split(":");
-			storeDTO.setOpenTime(Integer.parseInt(brakeTimeStartTemp[0]) * 60
-					+ Integer.parseInt(brakeTimeStartTemp[1]));
+			temp = "1999:12:31 00:00:00";
+			temp = mr.getParameter("brakeTimeStart");
+			String brakeTimeStartTemp[] = temp.split(":");
+			storeDTO.setOpenTime(
+					Integer.parseInt(brakeTimeStartTemp[0]) * 60 + Integer.parseInt(brakeTimeStartTemp[1]));
 
 			// 쉬는시간 끝
 			if (mr.getParameter("brakeTimeEnd") == null || mr.getParameter("brakeTimeEnd") == "") {
 				response.sendRedirect("../store/Main");
 				return;
 			}
-			String brakeTimeEndTemp[] = mr.getParameter("brakeTimeEnd").split(":");
-			storeDTO.setOpenTime(Integer.parseInt(brakeTimeEndTemp[0]) * 60
-					+ Integer.parseInt(brakeTimeEndTemp[1]));
+			temp = "1999:12:31 00:00:00";
+			temp = mr.getParameter("brakeTimeEnd");
+			String brakeTimeEndTemp[] = temp.split(":");
+			storeDTO.setOpenTime(Integer.parseInt(brakeTimeEndTemp[0]) * 60 + Integer.parseInt(brakeTimeEndTemp[1]));
 
 			// 가게 쉬는 날
 			int restDay = 0;
-			String[] temp = mr.getParameterValues("restDay");
-			for (int i = 0; i < temp.length; i++) {
-				switch (temp[i]) {
-				case "월": {
-					restDay += 1;
-				}
-				case "화": {
-					restDay += 2;
-				}
-				case "수": {
-					restDay += 4;
-				}
-				case "목": {
-					restDay += 8;
-				}
-				case "금": {
-					restDay += 16;
-				}
-				case "토": {
-					restDay += 32;
-				}
-				case "일": {
-					restDay += 64;
-				}
-				default:
-					break;
+			String[] tempy = null;
+			if (mr.getParameterValues("restDay") != null) {
+				tempy = mr.getParameterValues("restDay");
+				for (int i = 0; i < tempy.length; i++) {
+					switch (tempy[i]) {
+					case "월": {
+						restDay += 1;
+					}
+					case "화": {
+						restDay += 2;
+					}
+					case "수": {
+						restDay += 4;
+					}
+					case "목": {
+						restDay += 8;
+					}
+					case "금": {
+						restDay += 16;
+					}
+					case "토": {
+						restDay += 32;
+					}
+					case "일": {
+						restDay += 64;
+					}
+					default:
+						break;
+					}
 				}
 			}
+
 			storeDTO.setRestDay(restDay);
 
 			// 파일 업로드
@@ -186,12 +195,30 @@ public class AddStoreProc extends HttpServlet {
 
 				}
 			}
-			// 새로운 파일이 들어왔을 때
+			// 새로운 파일이 들어왔을 때만
 			if (uploadFileName != null) {
+				// 기존에 파일이 있었을 때
+				if (storeDTO.getThumb() != null && storeDTO.getThumb() != "") {
+					// 기존에 있던 파일 제거
+
+					// 실제 경로 가져오기
+					String tempRealDir = this.getServletContext().getRealPath("../store/storePic");
+					// 파일명만 가져오기
+					String[] tempFileNameSlice = storeDTO.getThumb().split("/");
+					String tempFileName = tempFileNameSlice[tempFileNameSlice.length - 1]; // 파일명
+					// File
+					File file = new File(tempRealDir + tempFileName);
+
+					// 삭제하고자 하는 파일이 서버에 존재하면 삭제시킨다
+					if (file.exists()) {
+						file.delete();
+					}
+				}
 				storeDTO.setThumb(uploadFileName); // 파일경로 + 파일명 저장
 			}
-			
-			//가게 추가
+
+			// 가게 추가
+			storeDTO.setMemberId(memberDTO.getId()); // 아이디 추가
 			StoreDAO.getInstance().addStore(storeDTO);
 
 		} catch (SQLException e) {
@@ -199,7 +226,7 @@ public class AddStoreProc extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		//이동
+		// 이동
 		response.sendRedirect("../store/Main");
 		return;
 	}

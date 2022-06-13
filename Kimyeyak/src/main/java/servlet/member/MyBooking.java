@@ -85,7 +85,7 @@ public class MyBooking extends HttpServlet {
 		}
 		
 		//이동
-		request.getRequestDispatcher("../member/MyBooking").forward(request, response);
+		request.getRequestDispatcher("../member/MyBooking.jsp").forward(request, response);
 		return;
 	}
 

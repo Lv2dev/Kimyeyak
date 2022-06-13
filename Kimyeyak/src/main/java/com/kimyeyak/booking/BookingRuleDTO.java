@@ -10,6 +10,7 @@ public class BookingRuleDTO {
 	private int count;
 	private Timestamp time;
 	private String notice;
+	private int close;
 	
 	//getters and setters
 	
@@ -54,6 +55,12 @@ public class BookingRuleDTO {
 	}
 	public void setNotice(String notice) {
 		this.notice = notice;
+	}
+	public int getClose() {
+		return close;
+	}
+	public void setClose(int close) {
+		this.close = close;
 	}
 	
 	

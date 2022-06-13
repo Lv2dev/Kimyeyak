@@ -234,7 +234,7 @@ public class UpdateStoreProc extends HttpServlet {
 		}
 
 		//이동
-		response.sendRedirect("../store/Main" + storeDTO.getStoreId());
+		response.sendRedirect("../store/Main");
 		return;
 	}
 }

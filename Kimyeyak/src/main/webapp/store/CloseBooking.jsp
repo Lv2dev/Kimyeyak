@@ -125,7 +125,7 @@ body {
 			<div class="pt-lg-5 pb-lg-3 px-0 mx-0 text-center">
 				<div class="col-lg-6 col-md-8 mx-auto my-5">
 					<h1 class="m-0 mb-3" style="font-weight: 800;">${ storeDTO.storeName }</h1>
-					<p class="lead text-muted" style="font-weight: 400;"><fmt:formatDate value="${ date }" pattern="yyyy년 MM월 dd일" />예약을 확인합니다.</p>
+					<p class="lead text-muted" style="font-weight: 400;"><fmt:formatDate value="${ date }" pattern="yyyy년 MM월 dd일" /> 의 예약규칙을 관리합니다</p>
 				</div>
 			</div>
 		</section>
@@ -135,11 +135,11 @@ body {
 			<div
 				class="col-12 p-0 px-1 m-0 container row justify-content-center mt-5">
 				<c:if test="${ empty bookingList }">
-					<div
-						class="col-12 col-md-12 mb-4 container row justify-content-left align-items-center m-0 pt-0 pl-auto text-center "
-						style="font-weight: 400">
-						<h4>예약이 없어요</h4>
-					</div>
+				<div
+					class="col-12 col-md-12 mb-4 container row justify-content-left align-items-center m-0 pt-0 pl-auto text-center "
+					style="font-weight: 400">
+					<h4>규칙이 없어요</h4>
+				</div>
 				</c:if>
 				<!-- 예약목록 -->
 				<c:forEach items="${ bookingList }" var="item">
@@ -147,18 +147,23 @@ body {
 						class="col-12 col-md-12 mb-3 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
 						style="clear: both;">
 						<div class="col-6 col-md-7  text-center">
-							<h3>예약자 : ${ item.memberId }</h3>
+							<h3>
+								규칙명 : ${ item.notice }
+							</h3>
 							<br>
-							<h5>인원 : ${ item.people }</h5>
-							<h5>
-								시간 :
-								<fmt:formatDate value="${ item.time }" pattern="hh시 mm분" />
-							</h5>
-							<h5>예약명 : ${ item.notice }</h5>
+							<h5>인원 : ${ item.minPeople } ~ ${ item.maxPeople }</h5>
+							<h5>예약받을 팀 수 : ${ item.count }</h5>
+							<h5>시간 : <fmt:formatDate value="${ item.time }" pattern="hh시 mm분" /></h5>
 						</div>
 						<div class="col-4 text-center p-2 mt-0">
-							<button type="button" class="btn btn-primary"
-								onclick="location.href='../store/CancelBooking?bookingId=${ item.bookingId}&storeId=${ storeDTO.storeId }'">예약취소</button>
+							<c:if test="${ item.close == 0 }">
+								<button type="button" class="btn btn-primary"
+									onclick="location.href='../store/CloseBookingProc?ruleId=${ item.id}&storeId=${ storeDTO.storeId }'">예약닫기</button>
+							</c:if>
+							<c:if test="${ item.close >0 }">
+								<button type="button" class="btn btn-primary"
+									onclick="location.href='../store/OpenBookingProc?ruleId=${ item.id}&storeId=${ storeDTO.storeId }'">예약열기</button>
+							</c:if>
 						</div>
 					</div>
 				</c:forEach>
@@ -169,7 +174,7 @@ body {
 				<h4>날짜 선택</h4>
 				<h4 class="mb-3"></h4>
 				<form class="needs-validation" novalidate=""
-					action="../store/MyStoreBooking?storeId=${ storeDTO.storeId }"
+					action="../store/CloseBooking?storeId=${ storeDTO.storeId }"
 					method="post">
 					<div class="row g-3">
 						
@@ -190,6 +195,8 @@ body {
 					<button class="w-100 btn btn-primary btn-lg" type="submit">해당 날짜의 예약 찾기</button>
 				</form>
 			</div>
+		</div>
+
 		</div>
 	</main>
 

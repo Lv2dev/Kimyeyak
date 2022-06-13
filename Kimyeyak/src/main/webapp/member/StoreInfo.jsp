@@ -100,11 +100,9 @@ body {
 				<div class="collapse navbar-collapse " id="navbarSupportedContent">
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">내정보</a></li>
+							aria-current="page" href="../member/MyInfo">내정보</a></li>
 						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="../member/Order">예약관리</a></li>
-						<li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="#">리뷰관리</a></li>
+							aria-current="page" href="../member/MyBooking">예약관리</a></li>
 						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="../member/NearStore">내주변</a></li>
 						<li class="nav-item"><a class="nav-link active"
@@ -146,16 +144,19 @@ body {
 		<div
 			class="px-md-0 px-lg-5 p-0 mx-0 mb-3  row justify-content-center container col-11 col-md-7">
 
-			<div
-				class="col-12 p-0 px-1 m-0 container row justify-content-center">
-				<!-- 가게이미지 -->
+			<div class="col-12 p-0 px-1 m-0 container row justify-content-center">
 				<div
-					class="col-12 col-md-12 mb-2 py-1 mx-2 container row justify-content-center align-items-center"
+					class="col-12 col-md-12 mb-2 py-1 mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center"
 					style="clear: both;">
-					<div
-						class="col-4 col-md-3 m-1 text-center shadow-lg rounded-lg bg-body ">
+					<div class="col-4 col-md-3 m-1 text-center">
 						<img alt="가게이미지" src="${ storeDTO.thumb }" class="w-100">
 					</div>
+					<div
+						class="col-6 col-md-7 m-1 text-left container row justify-content-left ">
+						<h5 class="m-0 col-12 text-left" style="font-weight: 400;">${ storeDTO.notice }</h5>
+
+					</div>
+
 				</div>
 			</div>
 			<div
@@ -178,96 +179,96 @@ body {
 			</div>
 			<!-- 24시간 영업이 아닌 경우 -->
 			<c:if test="${ openTimeChk == 0 }">
-			<div
-				class="col-12 col-md-12 mb-2  mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center py-3"
-				style="clear: both;">
 				<div
-					class="col-12 p-0 px-1 m-0 container row justify-content-center ">
-					<div class="col-11 col-md-10 m-1 text-left">
-						<h3>영업시간</h3>
-						<br>
-						<h5>${ openTime }~${ closeTime }</h5>
+					class="col-12 col-md-12 mb-2  mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center py-3"
+					style="clear: both;">
+					<div
+						class="col-12 p-0 px-1 m-0 container row justify-content-center ">
+						<div class="col-11 col-md-10 m-1 text-left">
+							<h3>영업시간</h3>
+							<br>
+							<h5>${ openTime }~${ closeTime }</h5>
+						</div>
 					</div>
-				</div>
 				</div>
 			</c:if>
 			<!-- 24시간 영업인 경우 -->
 			<c:if test="${ openTimeChk == 1 }">
-			<div
-				class="col-12 col-md-12 mb-2  mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center py-3"
-				style="clear: both;">
 				<div
-					class="col-12 p-0 px-1 m-0 container row justify-content-center ">
-					<div class="col-11 col-md-10 m-1 text-left">
-						<h3>영업시간</h3>
-						<br>
-						<h5>24시간 영업</h5>
+					class="col-12 col-md-12 mb-2  mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center py-3"
+					style="clear: both;">
+					<div
+						class="col-12 p-0 px-1 m-0 container row justify-content-center ">
+						<div class="col-11 col-md-10 m-1 text-left">
+							<h3>영업시간</h3>
+							<br>
+							<h5>24시간 영업</h5>
+						</div>
 					</div>
-				</div>
 				</div>
 			</c:if>
 			<!-- 휴무 시간이 있는 경우 -->
 			<c:if test="${ breakTimeChk == 0 }">
-			<div
-				class="col-12 col-md-12 mb-2  mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center py-3"
-				style="clear: both;">
 				<div
-					class="col-12 p-0 px-1 m-0 container row justify-content-center ">
-					<div class="col-11 col-md-10 m-1 text-left">
-						<h3>휴무시간</h3>
-						<br>
-						<h5>${ breakTimeStart }~${ breakTimeEnd }</h5>
+					class="col-12 col-md-12 mb-2  mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center py-3"
+					style="clear: both;">
+					<div
+						class="col-12 p-0 px-1 m-0 container row justify-content-center ">
+						<div class="col-11 col-md-10 m-1 text-left">
+							<h3>휴무시간</h3>
+							<br>
+							<h5>${ breakTimeStart }~${ breakTimeEnd }</h5>
+						</div>
 					</div>
-				</div>
 				</div>
 			</c:if>
 			<!-- 쉬는 요일 -->
 			<c:if test="${ not empty restDay }">
-			<div
-				class="col-12 col-md-12 mb-2  mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center py-3"
-				style="clear: both;">
 				<div
-					class="col-12 p-0 px-1 m-0 container row justify-content-center">
-					<div class="col-11 col-md-10 m-1 text-left">
-						<h3>휴일</h3>
-						<br>
-						<h5>${ restDay }</h5>
+					class="col-12 col-md-12 mb-2  mx-2 container row justify-content-center shadow-lg rounded-lg bg-body align-items-center py-3"
+					style="clear: both;">
+					<div
+						class="col-12 p-0 px-1 m-0 container row justify-content-center">
+						<div class="col-11 col-md-10 m-1 text-left">
+							<h3>휴일</h3>
+							<br>
+							<h5>${ restDay }</h5>
+						</div>
 					</div>
-				</div>
 				</div>
 			</c:if>
 			<section class="py-5 px-0 mx-0 text-center container">
-			<div class="pt-lg-5 pb-lg-3 px-0 mx-0 text-center">
-				<div class="col-lg-6 col-md-8 mx-auto my-5">
-					<h1 class="m-0 mb-3" style="font-weight: 800;">찾아오시는 길</h1>
-					<p class="lead text-muted" style="font-weight: 400;">
-						<!-- 담긴 주소가 없을 때 -->
-						<c:if test="${ addressChk == 0 }">
+				<div class="pt-lg-5 pb-lg-3 px-0 mx-0 text-center">
+					<div class="col-lg-6 col-md-8 mx-auto my-5">
+						<h1 class="m-0 mb-3" style="font-weight: 800;">찾아오시는 길</h1>
+						<p class="lead text-muted" style="font-weight: 400;">
+							<!-- 담긴 주소가 없을 때 -->
+							<c:if test="${ addressChk == 0 }">
 						주소가 입력되어 있지 않은 가게입니다.
 						</c:if>
-						<!-- 담긴 주소가 있을 때 -->
-						<c:if test="${ addressChk == 1 }">
+							<!-- 담긴 주소가 있을 때 -->
+							<c:if test="${ addressChk == 1 }">
 						${ addressDTO.address }
 						</c:if>
-					</p>
+						</p>
+					</div>
 				</div>
-			</div>
-		</section>
-		<!-- 지도가 표시되는 곳 -->
-		<c:if test="${ addressChk == 1 }">
-			<div
-				class="box px-md-0 px-lg-5 p-0 mx-0 mb-3  row justify-content-center container col-10 col-md-8"
-				id="map"></div>
-		</c:if>
+			</section>
+			<!-- 지도가 표시되는 곳 -->
+			<c:if test="${ addressChk == 1 }">
+				<div
+					class="box px-md-0 px-lg-5 p-0 mx-0 mb-3  row justify-content-center container col-10 col-md-8"
+					id="map"></div>
+			</c:if>
 		</div>
 	</main>
 
-<c:if test="${ addressChk == 1 }">
-	<script
-		src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-	<script
-		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=60fe788f0ea06f351b62582019d41e56&libraries=services"></script>
-	<script>
+	<c:if test="${ addressChk == 1 }">
+		<script
+			src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+		<script
+			src="//dapi.kakao.com/v2/maps/sdk.js?appkey=60fe788f0ea06f351b62582019d41e56&libraries=services"></script>
+		<script>
 var x, y, address;
 var mapContainer = document.getElementById('map'), // 지도를 표시할 div
     mapOption = {
@@ -296,6 +297,6 @@ map.setCenter(coords);
 // 마커를 결과값으로 받은 위치로 옮긴다.
 marker.setPosition(coords);
 </script>
-</c:if>
+	</c:if>
 </body>
 </html>

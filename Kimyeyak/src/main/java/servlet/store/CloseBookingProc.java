@@ -2,9 +2,6 @@ package servlet.store;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,18 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.kimyeyak.booking.BookingDAO;
-import com.kimyeyak.booking.BookingDTO;
 import com.kimyeyak.member.MemberDTO;
 import com.kimyeyak.store.StoreDTO;
 
 /**
- * 가게에 들어온 예약 목록을 보여주는 서블릿
+ * 해당 날짜의 해당 예약규칙 닫기
  */
-@WebServlet("/store/MyStoreBooking")
-public class MyStoreBooking extends HttpServlet {
-	// 폼에서 날짜가 넘어오지 않은 경우(처음 들어갈 때)
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+@WebServlet("/store/CloseBookingProc")
+public class CloseBookingProc extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
 		HttpSession session = request.getSession();
@@ -64,6 +58,7 @@ public class MyStoreBooking extends HttpServlet {
 			response.sendRedirect("../store/Main");
 			return;
 		}
+		
 
 		// 넘어온 가게 아이디 체크
 		if (request.getParameter("storeId") == null || request.getParameter("storeId") == "") {
@@ -77,41 +72,32 @@ public class MyStoreBooking extends HttpServlet {
 			System.out.println("가게아이디1");
 			return;
 		}
-
-		Timestamp ts = null;
-		// 넘어온 날짜가 없으면 오늘날짜
-		if (request.getParameter("date") == null || request.getParameter("date") == "") {
-			// 현재시간 timestamp
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
-			Calendar cal = Calendar.getInstance();
-			String today = null;
-			today = formatter.format(cal.getTime());
-			ts = Timestamp.valueOf(today);
-		}else { //넘어온 날짜가 있으면 가져오기
-			
-			ts = Timestamp.valueOf(request.getParameter("date") + " 00:00:00");
-			System.out.println("들어온 날짜 포맷 : " + ts);
+		
+		// 세션에 날짜 정보가 있는지 체크
+		if (session.getAttribute("date") == null) {
+			response.sendRedirect("../store/Main");
+			System.out.println("세션에 날짜 정보가 있는지 체크");
+			return;
 		}
+		Timestamp ts = (Timestamp)session.getAttribute("date");
+		
+		// 넘어온 rule_id 체크
+		if (request.getParameter("ruleId") == null || request.getParameter("ruleId") == "") {
+			response.sendRedirect("../store/Main");
+			System.out.println("rule_id");
+			return;
+		}
+		int ruleId = Integer.parseInt(request.getParameter("ruleId"));
 		
 		try {
-			//선택된 날짜의 예약 목록 가져오기
-			ArrayList<BookingDTO> bookingList = BookingDAO.getInstance().getStoreBookingDTOList(storeDTO.getStoreId(), ts);
-			request.setAttribute("bookingList", bookingList);
-			request.setAttribute("date", ts);
+			//예약닫기 수행
+			BookingDAO.getInstance().closeBooking(ruleId, ts);
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
 		}
 		
 		//이동
-		request.getRequestDispatcher("../store/MyStoreBooking.jsp").forward(request, response);
-		return;
-	}
-
-	// 폼에서 날짜가 넘어온 경우 doGet 수행
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		doGet(req, resp);
+		response.sendRedirect("../store/CloseBooking?storeId=" + storeDTO.getStoreId());
 		return;
 	}
 }
